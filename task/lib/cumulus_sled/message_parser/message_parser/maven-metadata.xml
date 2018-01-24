@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>cumulus_sled.message_parser</groupId>
+  <artifactId>message_parser</artifactId>
+  <versioning>
+    <release>1.4</release>
+    <versions>
+      <version>1.0</version>
+      <version>1.4</version>
+    </versions>
+    <lastUpdated>20180124154820</lastUpdated>
+  </versioning>
+</metadata>

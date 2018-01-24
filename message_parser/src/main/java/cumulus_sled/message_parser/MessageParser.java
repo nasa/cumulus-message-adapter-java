@@ -2,9 +2,7 @@ package cumulus_sled.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context; 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.google.gson.Gson;
 
 /**
  * Hanldes messages by passing the input through the sled and using the output as input 
@@ -36,16 +34,6 @@ public class MessageParser implements IMessageParser
     }
 
     /**
-     * TO DO: Additional code for context conversion
-     */
-    private String LambdaContextToJsonString(Context context)
-        throws JsonProcessingException
-    {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(context);
-    }
-
-    /**
      * Handles the message by passing the input through the sled with the context serialized as Json.
      * Calls task business logic and passes the output back to the sled
      * 
@@ -55,14 +43,8 @@ public class MessageParser implements IMessageParser
      */
     public String HandleMessage(String input, Context context, ITask task)
     {
-        String contextAsJson = "";
-        
-        // TO DO: Handle exception
-        try
-        {
-            contextAsJson = LambdaContextToJsonString(context);
-        }
-        catch(JsonProcessingException jsonProcessingException) {}
+        Gson gson = new Gson();
+        String contextAsJson = gson.toJson(context);
 
         String eventInput = _sled.LoadNestedEvent(input, contextAsJson);
 

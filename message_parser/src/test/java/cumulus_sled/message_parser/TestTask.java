@@ -8,6 +8,6 @@ public class TestTask implements ITask
      */
     public String PerformFunction(String input)
     {
-        return input + " [Function]";
+        return input;
     }
 }

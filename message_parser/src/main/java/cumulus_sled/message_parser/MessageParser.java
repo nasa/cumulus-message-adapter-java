@@ -2,7 +2,6 @@ package cumulus_sled.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context; 
 
-import com.google.gson.Gson;
 
 /**
  * Hanldes messages by passing the input through the sled and using the output as input 
@@ -43,13 +42,12 @@ public class MessageParser implements IMessageParser
      */
     public String HandleMessage(String input, Context context, ITask task)
     {
-        Gson gson = new Gson();
-        String contextAsJson = gson.toJson(context);
+        String remoteEvent = _sled.LoadRemoteEvent(input);
 
-        String eventInput = _sled.LoadNestedEvent(input, contextAsJson);
+        String eventInput = _sled.LoadNestedEvent(remoteEvent, context);
 
         String taskOutput = task.PerformFunction(eventInput);
 
-        return _sled.CreateNextEvent(taskOutput, input);
+        return _sled.CreateNextEvent(remoteEvent, eventInput, taskOutput);
     }
 }

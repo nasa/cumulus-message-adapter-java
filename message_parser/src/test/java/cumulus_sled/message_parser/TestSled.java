@@ -1,25 +1,31 @@
 package cumulus_sled.message_parser;
 
-import cumulus_sled.message_parser.ISled; 
+import com.amazonaws.services.lambda.runtime.Context; 
+
+import com.google.gson.Gson;
+
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Stub sled functionality for testing
  */
-public class TestSled implements ISled
+public class TestSled extends Sled
 {
     /**
-     * Stub load nested event
+     * Test creation of input to the sled. Take the input and put it into JSON with the name 
+     * of the sled function as the key. 
+     * @param sledFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
+     * @param inputJson - argument to sled function. Json that contains all of the params.
+     * @return Json with the sledFunction as they key to the input JSON
      */
-    public String LoadNestedEvent(String eventJson, String contextJson)
+    public String CallSledFunction(String sledFunction, String inputJson)
     {
-        return eventJson + " [Nested Event]";
-    }
+        Gson gson = new Gson();
 
-    /**
-     * Stub create nested event
-     */
-    public String CreateNextEvent(String nestedEventJson, String eventJson)
-    {
-        return nestedEventJson + " [Next Event]";
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(sledFunction, gson.fromJson(inputJson, Map.class));
+
+        return gson.toJson(map);
     }
 }

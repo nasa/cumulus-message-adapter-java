@@ -30,11 +30,14 @@ public class MessageParserTest
     }
 
     /**
-     * Test that the message handler is hitting all of the correct functions
+     * Test that the message handler is hitting all of the correct functions and converting the params
+     * to JSON correctly
      */
     public void testSled()
     {
         MessageParser parser = new MessageParser(new TestSled());
-        assertEquals("Input [Nested Event] [Function] [Next Event]", parser.HandleMessage("Input", null, new TestTask()));
+        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
+        String expectedOutput = "{\"loadRemoteEvent\":{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
+        assertEquals(expectedOutput, parser.HandleMessage(inputJson, null, new TestTask()));
     }
 }

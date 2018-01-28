@@ -9,5 +9,5 @@ import cumulus_sled.message_parser.ITask;
  */
 public interface IMessageParser
 {
-    public String HandleMessage(String input, Context context, ITask task);
+    public String HandleMessage(String input, Context context, ITask task) throws MessageAdapterException;
 }

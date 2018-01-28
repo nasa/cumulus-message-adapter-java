@@ -13,19 +13,14 @@ import java.util.HashMap;
 public class TestSled extends Sled
 {
     /**
-     * Test creation of input to the sled. Take the input and put it into JSON with the name 
-     * of the sled function as the key. 
+     * Return input JSON for testing purposes
      * @param sledFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
      * @param inputJson - argument to sled function. Json that contains all of the params.
-     * @return Json with the sledFunction as they key to the input JSON
+     * @return inputJson to test JSON conversions
      */
     public String CallSledFunction(String sledFunction, String inputJson)
+        throws MessageAdapterException
     {
-        Gson gson = new Gson();
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put(sledFunction, gson.fromJson(inputJson, Map.class));
-
-        return gson.toJson(map);
+        return inputJson;
     }
 }

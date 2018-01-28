@@ -41,6 +41,7 @@ public class MessageParser implements IMessageParser
      * @param task - callback to business logic function
      */
     public String HandleMessage(String input, Context context, ITask task)
+        throws MessageAdapterException
     {
         String remoteEvent = _sled.LoadRemoteEvent(input);
 

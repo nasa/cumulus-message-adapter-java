@@ -8,8 +8,8 @@ import com.amazonaws.services.lambda.runtime.Context;
  */
 public interface ISled
 {
-    String CallSledFunction(String sledFunction, String inputJson);
-    String LoadRemoteEvent(String eventJson);
-    String LoadNestedEvent(String eventJson, Context context);
-    String CreateNextEvent(String remoteEventJson, String nestedEventJson, String taskJson);
+    String CallSledFunction(String sledFunction, String inputJson) throws MessageAdapterException;
+    String LoadRemoteEvent(String eventJson) throws MessageAdapterException;
+    String LoadNestedEvent(String eventJson, Context context) throws MessageAdapterException;
+    String CreateNextEvent(String remoteEventJson, String nestedEventJson, String taskJson) throws MessageAdapterException;
 }

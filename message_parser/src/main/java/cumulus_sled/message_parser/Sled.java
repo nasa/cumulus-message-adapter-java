@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class Sled implements ISled
 {
@@ -20,46 +21,49 @@ public class Sled implements ISled
      * @return the return from the sled function
      */
     public String CallSledFunction(String sledFunction, String inputJson)
-       // throws IOException
+        throws MessageAdapterException
     {
-        Runtime runtime = Runtime.getRuntime();
-        String sledOutput = "";
+        String messageAdapterOutput = "";
 
-        // TO DO
         try
         {
-            Process process = runtime.exec("python ./cumulus-sled.zip " + sledFunction);
+            ProcessBuilder processBuilder = new ProcessBuilder("python", "cumulus-message-adapter.zip", sledFunction);
+
+            Process process = processBuilder.start();
 
             OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
             writer.write(inputJson);
             writer.close();
 
-            System.out.println("Input JSON: " + inputJson);
-
-            System.out.println(process.isAlive());
-
+            // Log the entire error
+            // TO DO: Update logging
             Scanner scanner = new Scanner(process.getErrorStream());
+            Boolean hasError = false;
             while(scanner.hasNextLine()) 
             {
-                sledOutput = scanner.nextLine();
-                System.out.println("ERROR: " + sledOutput);  
+                hasError = true;
+                System.out.println(String.format("Cumulus Message Adapter error: %s: %s", sledFunction, scanner.nextLine()));  
             }
             scanner.close();
+
+            if(hasError)
+            {
+                throw new MessageAdapterException("Error executing " + sledFunction);
+            }
 
             scanner = new Scanner(process.getInputStream());
             if(scanner.hasNextLine()) 
             {
-                sledOutput = scanner.nextLine();
-                System.out.println("OUTPUT: " + sledOutput);  
+                messageAdapterOutput = scanner.nextLine();
             }
             scanner.close();
         }
         catch(IOException e)
         {
-            return e.getMessage();       
+            throw new MessageAdapterException("Unable to find Cumulus Message Adapter", e.getCause());      
         }
 
-        return sledOutput;        
+        return messageAdapterOutput;        
     }
 
     /**
@@ -68,10 +72,8 @@ public class Sled implements ISled
      * @return result of 'loadRemoteEvent'
      */
     public String LoadRemoteEvent(String eventJson)
-       // throws IOException
+        throws MessageAdapterException
     {
-        System.out.println("Load Remote Event");
-
         Gson gson = new Gson();
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -87,17 +89,14 @@ public class Sled implements ISled
      * @return result of 'loadNestedEvent'
      */
     public String LoadNestedEvent(String eventJson, Context context)
+        throws MessageAdapterException
     {
-        // TEMP
-        return eventJson;
+        Gson gson = new Gson();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("event", gson.fromJson(eventJson, Map.class));
+        map.put("context", context);
 
-        // Call load nested event with the output
-        // Gson gson = new Gson();
-        // Map<String, Object> map = new HashMap<String, Object>();
-        // map.put("event", gson.fromJson(event, Map.class));
-        // map.put("context", context);
-
-        // return CallSledFunction("loadNestedEvent", gson.toJson(map));
+        return CallSledFunction("loadNestedEvent", gson.toJson(map));
     }
 
     /**
@@ -108,19 +107,21 @@ public class Sled implements ISled
      * @return result of 'createNextEvent'
      */
     public String CreateNextEvent(String remoteEventJson, String nestedEventJson, String taskJson)
+        throws MessageAdapterException
     {
-        // TEMP
-        return nestedEventJson;
+        // Use GsonBuilder here to output message_config as null in null case
+        // instead of dropping the key
+        GsonBuilder gsonBuilder = new GsonBuilder();  
+        gsonBuilder.serializeNulls();  
+        Gson gson = gsonBuilder.create();
 
-        // Gson gson = new Gson();
+        Map nestedEventMap = gson.fromJson(nestedEventJson, Map.class);
 
-        // Map nestedEventMap = gson.fromJson(nestedEventJson, Map.class);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("event", gson.fromJson(remoteEventJson, Map.class));
+        map.put("message_config", nestedEventMap.get("message_config"));
+        map.put("handler_response", gson.fromJson(taskJson, Map.class));
 
-        // Map<String, Object> map = new HashMap<String, Object>();
-        // map.put("event", gson.fromJson(remoteEventJson, Map.class));
-        // map.put("message_config", nestedEventMap.get("message_config"));
-        // map.put("handler_response", gson.fromJson(remoteEventJson, Map.class));
-
-        // return CallSledFunction("createNextEvent", gson.toJson(map));
+        return CallSledFunction("createNextEvent", gson.toJson(map));
     }
 }

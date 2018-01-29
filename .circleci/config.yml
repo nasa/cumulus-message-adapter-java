@@ -3,10 +3,12 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
+
+general:
+  build_dir: message_parser
+
 jobs:
   build:
-    general:
-      build_dir: message_parser
 
     docker:
       # specify the version you desire here
@@ -29,7 +31,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "pom.xml" }}
+          - v1-dependencies-{{ checksum "message_parser/pom.xml" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
@@ -38,7 +40,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
+          key: v1-dependencies-{{ checksum "message_parser/pom.xml" }}
         
       # run tests!
       - run: mvn integration-test

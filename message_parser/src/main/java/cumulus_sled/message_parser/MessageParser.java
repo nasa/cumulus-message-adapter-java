@@ -41,22 +41,28 @@ public class MessageParser implements IMessageParser
      * @param task - callback to business logic function
      */
     public String HandleMessage(String input, Context context, ITask task)
-        throws MessageAdapterException
     {
         Boolean messageAdapterDisabled = Boolean.valueOf(System.getenv("CUMULUS_MESSAGE_ADAPTER_DISABLED"));
 
-        // If the message adapter is disabled, call the task with original input
-        if(messageAdapterDisabled)
+        try
         {
-            return task.PerformFunction(input);
+            // If the message adapter is disabled, call the task with original input
+            if(messageAdapterDisabled)
+            {
+                return task.PerformFunction(input);
+            }
+
+            String remoteEvent = _messageAdapter.LoadRemoteEvent(input);
+
+            String eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context);
+
+            String taskOutput = task.PerformFunction(eventInput);
+
+            return _messageAdapter.CreateNextEvent(remoteEvent, eventInput, taskOutput);
         }
-
-        String remoteEvent = _messageAdapter.LoadRemoteEvent(input);
-
-        String eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context);
-
-        String taskOutput = task.PerformFunction(eventInput);
-
-        return _messageAdapter.CreateNextEvent(remoteEvent, eventInput, taskOutput);
+        catch(Exception e)
+        {
+            return "{\"payload\":null,\"exception\":\"" + e.getMessage() + "\"}";  
+        }
     }
 }

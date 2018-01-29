@@ -1,7 +1,5 @@
 package cumulus_sled.message_parser;
 
-import java.text.MessageFormat;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -40,15 +38,8 @@ public class MessageParserTest
         MessageParser parser = new MessageParser(new TestMessageAdapter());
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
         String expectedOutput = "{\"message_config\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
-        
-        try
-        {
-            assertEquals(expectedOutput, parser.HandleMessage(inputJson, null, new TestTask()));
-        }
-        catch(MessageAdapterException e)
-        {
-            fail();
-        }
+
+        assertEquals(expectedOutput, parser.HandleMessage(inputJson, null, new TestTask()));
     }
 
     /**
@@ -109,5 +100,17 @@ public class MessageParserTest
         {
             fail();
         }
+    }
+
+    /**
+     * Test the response when there is an exception
+     */
+    public void testException()
+    {
+        MessageParser parser = new MessageParser(new TestMessageAdapterException());
+        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
+        String expectedOutput = "{\"payload\":null,\"exception\":\"An error occurred in the Cumulus Message Adapter: test exception\"}";
+
+        assertEquals(expectedOutput, parser.HandleMessage(inputJson, null, new TestTask()));
     }
 }

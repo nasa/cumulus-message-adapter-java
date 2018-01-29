@@ -43,6 +43,14 @@ public class MessageParser implements IMessageParser
     public String HandleMessage(String input, Context context, ITask task)
         throws MessageAdapterException
     {
+        Boolean messageAdapterDisabled = Boolean.valueOf(System.getenv("CUMULUS_MESSAGE_ADAPTER_DISABLED"));
+
+        // If the message adapter is disabled, call the task with original input
+        if(messageAdapterDisabled)
+        {
+            return task.PerformFunction(input);
+        }
+
         String remoteEvent = _sled.LoadRemoteEvent(input);
 
         String eventInput = _sled.LoadNestedEvent(remoteEvent, context);

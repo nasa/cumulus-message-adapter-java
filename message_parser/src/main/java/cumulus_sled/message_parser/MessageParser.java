@@ -4,37 +4,37 @@ import com.amazonaws.services.lambda.runtime.Context;
 
 
 /**
- * Hanldes messages by passing the input through the sled and using the output as input 
- * for business logic. The output of the business logic is passed back to the sled.
+ * Hanldes messages by passing the input through the message adapter and using the output as input 
+ * for business logic. The output of the business logic is passed back to the message adapter.
  */
 public class MessageParser implements IMessageParser
 {
     /**
-     * Instance of the sled to use for message processing
+     * Instance of the message adapter to use for message processing
      */
-    private ISled _sled;
+    private IMessageAdapter _messageAdapter;
 
     /**
-     * Default constructor - creates a new sled instance
+     * Default constructor - creates a new message adapter instance
      */
     public MessageParser()
     {
-        _sled = new Sled();
+        _messageAdapter = new MessageAdapter();
     }
 
     /**
-     * Constructor, takes an instance of the sled. Can be used for testing
+     * Constructor, takes an instance of the message adapter. Can be used for testing
      * 
-     * @param sled - instance of the sled to use
+     * @param messageAdapter - instance of the message adapter to use
      */
-    public MessageParser(ISled sled)
+    public MessageParser(IMessageAdapter messageAdapter)
     {
-        _sled = sled;
+        _messageAdapter = messageAdapter;
     }
 
     /**
-     * Handles the message by passing the input through the sled with the context serialized as Json.
-     * Calls task business logic and passes the output back to the sled
+     * Handles the message by passing the input through the message adapter with the context serialized as Json.
+     * Calls task business logic and passes the output back to the message adapter
      * 
      * @param input - input Json
      * @param context - AWS Lambda context
@@ -51,12 +51,12 @@ public class MessageParser implements IMessageParser
             return task.PerformFunction(input);
         }
 
-        String remoteEvent = _sled.LoadRemoteEvent(input);
+        String remoteEvent = _messageAdapter.LoadRemoteEvent(input);
 
-        String eventInput = _sled.LoadNestedEvent(remoteEvent, context);
+        String eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context);
 
         String taskOutput = task.PerformFunction(eventInput);
 
-        return _sled.CreateNextEvent(remoteEvent, eventInput, taskOutput);
+        return _messageAdapter.CreateNextEvent(remoteEvent, eventInput, taskOutput);
     }
 }

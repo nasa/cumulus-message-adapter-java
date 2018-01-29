@@ -11,23 +11,23 @@ import java.util.HashMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class Sled implements ISled
+public class MessageAdapter implements IMessageAdapter
 {
     /**
-     * Call to sled zip to execute a sled function. Pass args through the process input
+     * Call to message adapter zip to execute a message adapter function. Pass args through the process input
      * and read return result from process output.
-     * @param sledFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
-     * @param inputJson - argument to sled function. Json that contains all of the params.
-     * @return the return from the sled function
+     * @param messageAdapterFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
+     * @param inputJson - argument to message adapter function. Json that contains all of the params.
+     * @return the return from the message adapter function
      */
-    public String CallSledFunction(String sledFunction, String inputJson)
+    public String CallMessageAdapterFunction(String messageAdapterFunction, String inputJson)
         throws MessageAdapterException
     {
         String messageAdapterOutput = "";
 
         try
         {
-            ProcessBuilder processBuilder = new ProcessBuilder("python", "cumulus-message-adapter.zip", sledFunction);
+            ProcessBuilder processBuilder = new ProcessBuilder("python", "cumulus-message-adapter.zip", messageAdapterFunction);
 
             Process process = processBuilder.start();
 
@@ -42,13 +42,13 @@ public class Sled implements ISled
             while(scanner.hasNextLine()) 
             {
                 hasError = true;
-                System.out.println(String.format("Cumulus Message Adapter error: %s: %s", sledFunction, scanner.nextLine()));  
+                System.out.println(String.format("Cumulus Message Adapter error: %s: %s", messageAdapterFunction, scanner.nextLine()));  
             }
             scanner.close();
 
             if(hasError)
             {
-                throw new MessageAdapterException("Error executing " + sledFunction);
+                throw new MessageAdapterException("Error executing " + messageAdapterFunction);
             }
 
             scanner = new Scanner(process.getInputStream());
@@ -67,7 +67,7 @@ public class Sled implements ISled
     }
 
     /**
-     * Format the arguments and call the 'loadRemoteEvent' sled function
+     * Format the arguments and call the 'loadRemoteEvent' message adapter function
      * @param eventJson - Json passed from lambda
      * @return result of 'loadRemoteEvent'
      */
@@ -79,11 +79,11 @@ public class Sled implements ISled
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("event", gson.fromJson(eventJson, Map.class));
 
-        return CallSledFunction("loadRemoteEvent", gson.toJson(map));
+        return CallMessageAdapterFunction("loadRemoteEvent", gson.toJson(map));
     }
 
     /**
-     * Format the arguments and call the 'loadNestedEvent' sled function
+     * Format the arguments and call the 'loadNestedEvent' message adapter function
      * @param eventJson - Json from loadRemoteEvent
      * @param context - AWS Lambda context
      * @return result of 'loadNestedEvent'
@@ -96,11 +96,11 @@ public class Sled implements ISled
         map.put("event", gson.fromJson(eventJson, Map.class));
         map.put("context", context);
 
-        return CallSledFunction("loadNestedEvent", gson.toJson(map));
+        return CallMessageAdapterFunction("loadNestedEvent", gson.toJson(map));
     }
 
     /**
-     * Format the arguments and call the 'createNextEvent' sled function
+     * Format the arguments and call the 'createNextEvent' message adapter function
      * @param remoteEventJson - Json result from 'loadRemoteEvent'
      * @param nestedEventJson - Json result from 'loadNestedEvent'
      * @param taskJson - result from calling the task
@@ -122,6 +122,6 @@ public class Sled implements ISled
         map.put("message_config", nestedEventMap.get("message_config"));
         map.put("handler_response", gson.fromJson(taskJson, Map.class));
 
-        return CallSledFunction("createNextEvent", gson.toJson(map));
+        return CallMessageAdapterFunction("createNextEvent", gson.toJson(map));
     }
 }

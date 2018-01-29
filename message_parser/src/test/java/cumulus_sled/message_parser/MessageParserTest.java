@@ -37,7 +37,7 @@ public class MessageParserTest
      */
     public void testMessageAdapter()
     {
-        MessageParser parser = new MessageParser(new TestSled());
+        MessageParser parser = new MessageParser(new TestMessageAdapter());
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
         String expectedOutput = "{\"message_config\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
         
@@ -56,13 +56,13 @@ public class MessageParserTest
      */
     public void testLoadRemoteEvent()
     {
-        TestSled sled = new TestSled();
+        TestMessageAdapter messageAdapter = new TestMessageAdapter();
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
         String expectedOutput = "{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}}";
         
         try
         {
-            assertEquals(expectedOutput, sled.LoadRemoteEvent(inputJson));
+            assertEquals(expectedOutput, messageAdapter.LoadRemoteEvent(inputJson));
         }
         catch(MessageAdapterException e)
         {
@@ -75,13 +75,13 @@ public class MessageParserTest
      */
     public void testLoadNestedEvent()
     {
-        TestSled sled = new TestSled();
+        TestMessageAdapter messageAdapter = new TestMessageAdapter();
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
         String expectedOutput = "{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}}";
         
         try
         {
-            assertEquals(expectedOutput, sled.LoadNestedEvent(inputJson, null));
+            assertEquals(expectedOutput, messageAdapter.LoadNestedEvent(inputJson, null));
         }
         catch(MessageAdapterException e)
         {
@@ -94,7 +94,7 @@ public class MessageParserTest
      */
     public void testCreateNextEvent()
     {
-        TestSled sled = new TestSled();
+        TestMessageAdapter messageAdapter = new TestMessageAdapter();
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
         String nestedEventJson = "{\"input\": {\"anykey\": \"anyvalue\"}, \"config\": {\"bar\": \"baz\"}}";
         String taskOutput = "{\"task\":\"complete\"}";
@@ -103,7 +103,7 @@ public class MessageParserTest
 
         try
         {
-            assertEquals(expectedOutput, sled.CreateNextEvent(inputJson, nestedEventJson, taskOutput));
+            assertEquals(expectedOutput, messageAdapter.CreateNextEvent(inputJson, nestedEventJson, taskOutput));
         }
         catch(MessageAdapterException e)
         {

@@ -1,10 +1,11 @@
-package cumulus_sled.message_parser;
+package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context; 
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -13,6 +14,8 @@ import com.google.gson.GsonBuilder;
 
 public class MessageAdapter implements IMessageAdapter
 {
+    private static final int MESSAGE_ADAPTER_TIMEOUT = 10; // seconds
+
     /**
      * Call to message adapter zip to execute a message adapter function. Pass args through the process input
      * and read return result from process output.
@@ -35,28 +38,43 @@ public class MessageAdapter implements IMessageAdapter
             writer.write(inputJson);
             writer.close();
 
-            // Log the entire error
-            // TO DO: Update logging
-            Scanner scanner = new Scanner(process.getErrorStream());
-            Boolean hasError = false;
-            while(scanner.hasNextLine()) 
+            Boolean processComplete = false;
+            
+            try
             {
-                hasError = true;
-                System.out.println(String.format("Cumulus Message Adapter error: %s: %s", messageAdapterFunction, scanner.nextLine()));  
+                processComplete = process.waitFor(MESSAGE_ADAPTER_TIMEOUT, TimeUnit.SECONDS);
             }
-            scanner.close();
-
-            if(hasError)
+            catch(InterruptedException e)
             {
+                // Log that there was an error and then it'll go into the error code below where we can 
+                // get and log the output from stderr
+                System.out.println(String.format("Cumulus Message Adapter error: %s: %s", messageAdapterFunction, e.getMessage()));
+            }
+
+            int exitValue = process.exitValue();
+
+            if(processComplete && exitValue == 0) // Success
+            {
+                Scanner scanner = new Scanner(process.getInputStream());
+                if(scanner.hasNextLine()) 
+                {
+                    messageAdapterOutput = scanner.nextLine();
+                }
+                scanner.close();
+            }
+            else // An error has occurred
+            {
+                // Log the entire error
+                // TO DO: Update logging
+                Scanner scanner = new Scanner(process.getErrorStream());
+                while(scanner.hasNextLine()) 
+                {
+                    System.out.println(String.format("Cumulus Message Adapter error: %s: %s", messageAdapterFunction, scanner.nextLine()));  
+                }
+                scanner.close();
+
                 throw new MessageAdapterException("Error executing " + messageAdapterFunction);
             }
-
-            scanner = new Scanner(process.getInputStream());
-            if(scanner.hasNextLine()) 
-            {
-                messageAdapterOutput = scanner.nextLine();
-            }
-            scanner.close();
         }
         catch(IOException e)
         {

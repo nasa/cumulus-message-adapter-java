@@ -1,7 +1,6 @@
-package cumulus_sled.message_parser;
+package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context; 
-
 
 /**
  * Hanldes messages by passing the input through the message adapter and using the output as input 
@@ -41,6 +40,7 @@ public class MessageParser implements IMessageParser
      * @param task - callback to business logic function
      */
     public String HandleMessage(String input, Context context, ITask task)
+        throws MessageAdapterException
     {
         Boolean messageAdapterDisabled = Boolean.valueOf(System.getenv("CUMULUS_MESSAGE_ADAPTER_DISABLED"));
 
@@ -49,20 +49,26 @@ public class MessageParser implements IMessageParser
             // If the message adapter is disabled, call the task with original input
             if(messageAdapterDisabled)
             {
-                return task.PerformFunction(input);
+                return task.PerformFunction(input, context);
             }
 
             String remoteEvent = _messageAdapter.LoadRemoteEvent(input);
 
             String eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context);
 
-            String taskOutput = task.PerformFunction(eventInput);
+            String taskOutput = task.PerformFunction(eventInput, context);
 
             return _messageAdapter.CreateNextEvent(remoteEvent, eventInput, taskOutput);
         }
         catch(Exception e)
         {
-            return "{\"payload\":null,\"exception\":\"" + e.getMessage() + "\"}";  
+            if(e.getClass().getSimpleName().contains("WorkflowError") || 
+               e.getClass().getSimpleName().contains("WorkflowException"))
+            {
+                return "{\"payload\":null,\"exception\":\"" + e.getMessage() + "\"}";  
+            }
+            
+            throw new MessageAdapterException(e.getMessage(), e.getCause());
         }
     }
 }

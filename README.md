@@ -4,9 +4,13 @@
 
 Java handler for the Cumulus Message Adapter. 
 
+## Prerequisites
+
+  - Maven
+
 ## Building and Packaging
 
-Maven must be installed as a prerequisite. To build the uber-jar, run
+To build the uber-jar, run
 
 ```mvn -B package``` 
 
@@ -20,9 +24,9 @@ Add the message parser uber-jar as a dependency in your project.
 
 Create a Java class that implements the ITask interface and  
 
-```String PerformFunction(String input);```
+```String PerformFunction(String input, Context context);```
 
-```PerformFunction``` should contain all of the business logic for the Lambda task. This is the callback function used by the message parser.
+```PerformFunction``` should contain all of the business logic for the Lambda task. This is the callback function used by the message parser. Context is the AWS Lambda Context.
 
 Create an instance of ```MessageParser``` and call ```HandleMessage(String input, Context context, ITask task)``` with the input to the Lambda task, the AWS Lambda Context, and an instance of the class that implements ITask.
 
@@ -30,16 +34,24 @@ An example Lambda task is located in the task directory.
 
 ## Testing the Message Parser
 
-### Manually with Lambda
-
-An example task is located in the repository that can be used to test the message parser in Lambda.
-
-The message parser uber-jar should be added as a dependency to the task. The compiled task code, the message parser uber-jar, the cumulus message adapter zip, and any other dependencies should all be included in a zip file and uploaded to lambda. 
-
-Instructions on the zip file folder structure are [here](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html)
-
 ### Integration Tests
 
 Integration tests are located in the test folder in ```MessageParserTest.java```. To build and run the tests, run 
 
-```mvn -B verify```
+```mvn -B test```
+
+### Manually with Lambda
+
+An example task is located in the task folder of the repository that can be used to test the message parser in Lambda.
+
+The message parser uber-jar should be added as a dependency to the task in the lib folder. To deploy the message parser to the task, build and package the message parser and run the following from the message_parser directory: 
+
+```mvn deploy:deploy-file -Durl=file:<path to task lib folder> -Dfile=target/message_parser-1.8.jar -DgroupId=cumulus_message_adapter.message_parser -DartifactId=message_parser -Dpackaging=jar -Dversion=1.8```
+
+If updating the version of the message parser, make sure to update the pom.xml in the task code. To build the task with this dependency, run:
+
+```mvn clean install -U```
+
+then ```mvn -B package```
+
+The compiled task code, the message parser uber-jar, the cumulus message adapter zip, and any other dependencies should all be included in a zip file and uploaded to lambda. Information on the zip file folder structure is located [here](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html).

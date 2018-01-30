@@ -4,7 +4,7 @@
   <groupId>cumulus_sled.message_parser</groupId>
   <artifactId>message_parser</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.5</version>
   <name>message_parser</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -20,9 +20,9 @@
       <version>1.2.0</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.6.3</version>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.2</version>
     </dependency>
   </dependencies>
   <build>

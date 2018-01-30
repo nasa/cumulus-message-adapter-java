@@ -26,9 +26,9 @@
       <version>1.2.0</version>
     </dependency>
     <dependency>
-      <groupId>cumulus_sled.message_parser</groupId>
+      <groupId>cumulus_message_adapter.message_parser</groupId>
       <artifactId>message_parser</artifactId>
-      <version>1.4</version>
+      <version>1.6</version>
     </dependency> 
   </dependencies>
   <build>

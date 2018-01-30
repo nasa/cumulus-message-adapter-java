@@ -1,6 +1,6 @@
 package test_task.task;
 
-import cumulus_sled.message_parser.ITask;
+import cumulus_message_adapter.message_parser.ITask;
 
 public class TaskLogic implements ITask
 {

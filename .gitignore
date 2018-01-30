@@ -36,4 +36,7 @@ buildNumber.properties
 
 .vscode/
 .settings/
+.gradle/
 bin/
+build/
+lib/

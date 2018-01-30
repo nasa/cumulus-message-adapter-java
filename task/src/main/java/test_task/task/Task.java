@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 import cumulus_message_adapter.message_parser.MessageParser;
 import cumulus_message_adapter.message_parser.ITask;
+import cumulus_message_adapter.message_parser.MessageAdapterException;
 
 /**
  * Lambda request handler for testing Message Parser
@@ -20,6 +21,14 @@ public class Task implements RequestHandler<String, String>
      */
     public String handleRequest(String input, Context context) {
         MessageParser parser = new MessageParser();
-        return parser.HandleMessage(input, context, new TaskLogic());
+
+        try
+        {
+            return parser.HandleMessage(input, context, new TaskLogic());
+        }
+        catch(MessageAdapterException e)
+        {
+            return e.getMessage();
+        }
     }
 }

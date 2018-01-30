@@ -28,7 +28,7 @@
     <dependency>
       <groupId>cumulus_message_adapter.message_parser</groupId>
       <artifactId>message_parser</artifactId>
-      <version>1.6</version>
+      <version>1.8</version>
     </dependency> 
   </dependencies>
   <build>

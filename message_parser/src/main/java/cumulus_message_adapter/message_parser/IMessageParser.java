@@ -1,8 +1,8 @@
-package cumulus_sled.message_parser;
+package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context;
 
-import cumulus_sled.message_parser.ITask; 
+import cumulus_message_adapter.message_parser.ITask; 
 
 /**
  * Message Parser interface

@@ -1,4 +1,4 @@
-package cumulus_sled.message_parser;
+package cumulus_message_adapter.message_parser;
 
 public class TestTask implements ITask
 {

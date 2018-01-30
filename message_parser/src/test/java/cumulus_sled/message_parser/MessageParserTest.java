@@ -1,4 +1,4 @@
-package cumulus_sled.message_parser;
+package cumulus_message_adapter.message_parser;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

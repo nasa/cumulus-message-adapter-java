@@ -55,3 +55,27 @@ If updating the version of the message parser, make sure to update the pom.xml i
 then ```mvn -B package```
 
 The compiled task code, the message parser uber-jar, the cumulus message adapter zip, and any other dependencies should all be included in a zip file and uploaded to lambda. Information on the zip file folder structure is located [here](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html).
+
+## Usage in a Cumulus Deployment
+
+During deployment, Cumulus will automatically obtain and inject the Cumulus Message Adapter zip into the compiled code and create a zip file to be deployed to Lambda.
+
+The test task in the 'task' folder of this repository would be configured in lambdas.yml as follows:
+
+```
+JavaTest:
+  handler: test_task.task.Task::handleRequest
+  timeout: 300
+  source: '../cumulus-message-adapter-java/deploy/'
+  useSled: true
+  runtime: java8
+  memory: 256
+```
+
+The source points to a folder with the compiled .class files and dependency libraries in the Lambda Java zip folder structure (details [here](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html)), not an uber-jar.
+
+The deploy folder referenced here would contain a folder 'test_task/task/' which contains Task.class and TaskLogic.class as well as a lib folder containing dependency jars. The Cumulus Message Adapter zip would be added at the top level by the deployment step and that folder zipped and deployed to Lambda. 
+
+
+
+

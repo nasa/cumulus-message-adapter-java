@@ -67,7 +67,7 @@ JavaTest:
   handler: test_task.task.Task::handleRequest
   timeout: 300
   source: '../cumulus-message-adapter-java/deploy/'
-  useSled: true
+  useMessageAdapter: true
   runtime: java8
   memory: 256
 ```

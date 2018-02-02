@@ -18,7 +18,9 @@ to be sent to the next task.
 
 ## Installation
 
-With Maven installed, to build the uber-jar, run
+[Install Apache Maven](https://maven.apache.org/install.html) if not installed.
+
+To build the uber-jar, run
 
 ```mvn -B package``` 
 
@@ -105,7 +107,7 @@ The deploy folder referenced here would contain a folder 'test_task/task/' which
 
 ### Prerequisites
 
-  * Apache Maven
+  * [Apache Maven](https://maven.apache.org/install.html)
   
 ### Building
 

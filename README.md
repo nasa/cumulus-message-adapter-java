@@ -83,7 +83,7 @@ The compiled task code, the message parser uber-jar, the cumulus message adapter
 
 ## Usage in Cumulus Deployment
 
-During deployment, Cumulus will automatically obtain and inject the Cumulus Message Adapter zip into the compiled code and create a zip file to be deployed to Lambda.
+During deployment, Cumulus will automatically obtain and inject the [Cumulus Message Adapter](https://github.com/cumulus-nasa/cumulus-message-adapter) zip into the compiled code and create a zip file to be deployed to Lambda.
 
 The test task in the 'task' folder of this repository would be configured in lambdas.yml as follows:
 

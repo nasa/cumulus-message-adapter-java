@@ -10,19 +10,19 @@ If you have any questions or ideas, or notice any problems or bugs, first [searc
 
 ## Pull Requests
 
-If you want to submit your own contributions, follow these steps;
+If you want to submit your own contributions, follow these steps:
 
 * Fork this repo
 * Create a new branch from the branch you'd like to contribute to
 * If an issue does't already exist, submit one (see above)
-* [Create a pull request](https://help.github.com/articles/creating-a-pull-request/) from your fork into the target branch of the cumulus-nasa/cumulus repo
+* [Create a pull request](https://help.github.com/articles/creating-a-pull-request/) from your fork into the target branch of the cumulus-nasa/cumulus-message-adapter-java repo
 * Be sure to [mention the corresponding issue number](https://help.github.com/articles/closing-issues-using-keywords/) in the PR description, i.e. "Fixes Issue #10"
 * Upon submission of a pull request, the Cumulus development team will review the code
 * The request will then either be merged, declined, or an adjustment to the code will be requested
 
 ## Guidelines
 
-We ask that you follow these guidelines with your contributions;
+We ask that you follow these guidelines with your contributions:
 
 ### Tests
 
@@ -33,7 +33,7 @@ All of the automated tests for this project need to pass before your submission 
 * Make small commits that show the individual changes you are making
 * Write descriptive commit messages that explain your changes
 
-Example of a good commit message;
+Example of a good commit message:
 
 ```
 Improve contributing guidelines. Fixes #10
@@ -41,4 +41,4 @@ Improve contributing guidelines. Fixes #10
 Improve contributing docs and consolidate them in the standard location https://help.github.com/articles/setting-guidelines-for-repository-contributors/
 ```
 
-### For more information on Cumulus governance, see the [Cumulus Code Contribution Guidelines](https://docs.google.com/document/d/14J_DS6nyQ32BpeVjdR-YKfzHAzFB299tKghPGshXUTU/edit).
+### For more information on Cumulus governance, see the [Cumulus Code Contribution Guidelines](https://docs.google.com/document/d/14J_DS6nyQ32BpeVjdR-YKfzHAzFB299tKghPGshXUTU/edit) and [the Cumulus Wiki](https://wiki.earthdata.nasa.gov/display/CUMULUS/Cumulus).

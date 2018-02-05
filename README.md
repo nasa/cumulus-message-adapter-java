@@ -18,15 +18,7 @@ to be sent to the next task.
 
 ## Installation
 
-[Install Apache Maven](https://maven.apache.org/install.html) if not installed.
-
-To build the uber-jar, run
-
-```mvn -B package``` 
-
-The resulting message parser uber-jar should be added as a dependency to the lambda task in the lib folder. To deploy the message parser to the task, build and package the message parser and run the following from the message_parser directory: 
-
-```mvn deploy:deploy-file -Durl=file:<path to task lib folder> -Dfile=target/message_parser-1.8.jar -DgroupId=cumulus_message_adapter.message_parser -DartifactId=message_parser -Dpackaging=jar -Dversion=1.8```
+Add the Cumulus Message Adapter as a dependency in your project. The current version and dependency installation code can be found [here](https://clojars.org/gov.nasa.earthdata/cumulus-message-adapter).
 
 ## Task definition
 

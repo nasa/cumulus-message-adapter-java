@@ -7,12 +7,6 @@
   <version>1.0</version>
   <name>task</name>
   <url>http://maven.apache.org</url>
-  <repositories>
-    <repository>
-        <id>lib</id>
-        <url>file:${project.basedir}/lib</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -26,10 +20,10 @@
       <version>1.2.0</version>
     </dependency>
     <dependency>
-      <groupId>cumulus_message_adapter.message_parser</groupId>
-      <artifactId>message_parser</artifactId>
-      <version>1.8</version>
-    </dependency> 
+      <groupId>gov.nasa.earthdata</groupId>
+      <artifactId>cumulus-message-adapter</artifactId>
+      <version>1.0.1</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

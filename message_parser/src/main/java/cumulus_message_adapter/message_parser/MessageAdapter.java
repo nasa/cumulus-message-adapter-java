@@ -89,13 +89,14 @@ public class MessageAdapter implements IMessageAdapter
      * @param eventJson - Json passed from lambda
      * @return result of 'loadRemoteEvent'
      */
-    public String LoadRemoteEvent(String eventJson)
+    public String LoadRemoteEvent(String eventJson, SchemaLocations schemaLocations)
         throws MessageAdapterException
     {
         Gson gson = new Gson();
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("event", gson.fromJson(eventJson, Map.class));
+        map.put("schemas", schemaLocations);
 
         return CallMessageAdapterFunction("loadRemoteEvent", gson.toJson(map));
     }
@@ -106,13 +107,14 @@ public class MessageAdapter implements IMessageAdapter
      * @param context - AWS Lambda context
      * @return result of 'loadNestedEvent'
      */
-    public String LoadNestedEvent(String eventJson, Context context)
+    public String LoadNestedEvent(String eventJson, Context context, SchemaLocations schemaLocations)
         throws MessageAdapterException
     {
         Gson gson = new Gson();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("event", gson.fromJson(eventJson, Map.class));
         map.put("context", context);
+        map.put("schemas", schemaLocations);
 
         return CallMessageAdapterFunction("loadNestedEvent", gson.toJson(map));
     }
@@ -124,7 +126,7 @@ public class MessageAdapter implements IMessageAdapter
      * @param taskJson - result from calling the task
      * @return result of 'createNextEvent'
      */
-    public String CreateNextEvent(String remoteEventJson, String nestedEventJson, String taskJson)
+    public String CreateNextEvent(String remoteEventJson, String nestedEventJson, String taskJson, SchemaLocations schemaLocations)
         throws MessageAdapterException
     {
         // Use GsonBuilder here to output message_config as null in null case
@@ -139,6 +141,7 @@ public class MessageAdapter implements IMessageAdapter
         map.put("event", gson.fromJson(remoteEventJson, Map.class));
         map.put("message_config", nestedEventMap.get("message_config"));
         map.put("handler_response", gson.fromJson(taskJson, Map.class));
+        map.put("schemas", schemaLocations);
 
         return CallMessageAdapterFunction("createNextEvent", gson.toJson(map));
     }

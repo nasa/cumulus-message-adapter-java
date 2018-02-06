@@ -37,11 +37,31 @@ public class MessageParserTest
     {
         MessageParser parser = new MessageParser(new TestMessageAdapter());
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
-        String expectedOutput = "{\"message_config\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
+        String expectedOutput = "{\"message_config\":null,\"schemas\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
 
         try
         {
-            assertEquals(expectedOutput, parser.HandleMessage(inputJson, null, new TestTask(false)));
+            assertEquals(expectedOutput, parser.RunCumulusTask(inputJson, null, new TestTask(false)));
+        }
+        catch(MessageAdapterException e)
+        {
+            fail();
+        }
+    }
+
+    /**
+     * Test that when passing in schema locations they are serialized to JSON correctly
+     */
+    public void testSchemaLocations()
+    {
+        MessageParser parser = new MessageParser(new TestMessageAdapter());
+        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
+        String expectedOutput = "{\"message_config\":null,\"schemas\":{\"input\":\"input.json\",\"output\":\"output.json\",\"config\":\"config.json\"},\"handler_response\":{\"task\":\"complete\"},\"event\":{\"schemas\":{\"input\":\"input.json\",\"output\":\"output.json\",\"config\":\"config.json\"},\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
+
+        try
+        {
+            System.out.println(parser.RunCumulusTask(inputJson, null, new TestTask(false), "input.json", "output.json", "config.json"));
+            assertEquals(expectedOutput, parser.RunCumulusTask(inputJson, null, new TestTask(false), "input.json", "output.json", "config.json"));
         }
         catch(MessageAdapterException e)
         {
@@ -60,7 +80,7 @@ public class MessageParserTest
         
         try
         {
-            assertEquals(expectedOutput, messageAdapter.LoadRemoteEvent(inputJson));
+            assertEquals(expectedOutput, messageAdapter.LoadRemoteEvent(inputJson, null));
         }
         catch(MessageAdapterException e)
         {
@@ -79,7 +99,7 @@ public class MessageParserTest
         
         try
         {
-            assertEquals(expectedOutput, messageAdapter.LoadNestedEvent(inputJson, null));
+            assertEquals(expectedOutput, messageAdapter.LoadNestedEvent(inputJson, null, null));
         }
         catch(MessageAdapterException e)
         {
@@ -97,11 +117,11 @@ public class MessageParserTest
         String nestedEventJson = "{\"input\": {\"anykey\": \"anyvalue\"}, \"config\": {\"bar\": \"baz\"}}";
         String taskOutput = "{\"task\":\"complete\"}";
     
-        String expectedOutput = "{\"message_config\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}}";
+        String expectedOutput = "{\"message_config\":null,\"schemas\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}}";
 
         try
         {
-            assertEquals(expectedOutput, messageAdapter.CreateNextEvent(inputJson, nestedEventJson, taskOutput));
+            assertEquals(expectedOutput, messageAdapter.CreateNextEvent(inputJson, nestedEventJson, taskOutput, null));
         }
         catch(MessageAdapterException e)
         {
@@ -120,7 +140,7 @@ public class MessageParserTest
 
         try
         {
-            assertEquals(expectedOutput, parser.HandleMessage(inputJson, null, new TestTask(true)));
+            assertEquals(expectedOutput, parser.RunCumulusTask(inputJson, null, new TestTask(true)));
         }
         catch(MessageAdapterException e)
         {

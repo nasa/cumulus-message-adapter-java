@@ -14,7 +14,7 @@ import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.Filter;;
 
 /**
- * Customer appender for testing the logging. This appender just saves the log message so they
+ * Custom appender for testing the logging. This appender just saves the log message so they
  * can be retrieved later.
  */
 @Plugin(name = "TestAppender", category = "Core", elementType = "apender", printObject = true)

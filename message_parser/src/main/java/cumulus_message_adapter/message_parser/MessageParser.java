@@ -54,16 +54,18 @@ public class MessageParser implements IMessageParser
                 return task.PerformFunction(input, context);
             }
 
-            String remoteEvent = _messageAdapter.LoadRemoteEvent(input, schemaLocations);
+            String remoteEvent = _messageAdapter.LoadRemoteEvent(context, input, schemaLocations);
 
             String eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context, schemaLocations);
 
             String taskOutput = task.PerformFunction(eventInput, context);
 
-            return _messageAdapter.CreateNextEvent(remoteEvent, eventInput, taskOutput, schemaLocations);
+            return _messageAdapter.CreateNextEvent(context, remoteEvent, eventInput, taskOutput, schemaLocations);
         }
         catch(Exception e)
         {
+            AdapterLogger.LogError(context, input, e.getMessage());
+
             if(e.getClass().getSimpleName().contains("WorkflowError") || 
                e.getClass().getSimpleName().contains("WorkflowException"))
             {

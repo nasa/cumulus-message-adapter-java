@@ -18,6 +18,11 @@ public class AdapterLogger
     static final Logger _logger = LogManager.getLogger();
 
     static final String LEVEL_ERROR = "error";
+    static final String LEVEL_FATAL = "fatal";
+    static final String LEVEL_WARNING = "warn";
+    static final String LEVEL_INFO = "info";
+    static final String LEVEL_DEBUG = "debug";
+    static final String LEVEL_TRACE = "trace";
 
     static String _executions;
     static String _sender;
@@ -117,4 +122,53 @@ public class AdapterLogger
         _logger.error(GenerateMessage(LEVEL_ERROR, message));
     }
 
+    /**
+     * Log a fatal error
+     * 
+     * @param message - log message
+     */
+    public static void LogFatal(String message)
+    {
+        _logger.fatal(GenerateMessage(LEVEL_FATAL, message));
+    }
+
+    /**
+     * Log a warning
+     * 
+     * @param message - log message
+     */
+    public static void LogWarning(String message)
+    {
+        _logger.warn(GenerateMessage(LEVEL_WARNING, message));
+    }
+
+    /**
+     * Log an info message
+     * 
+     * @param message - log message
+     */
+    public static void LogInfo(String message)
+    {
+        _logger.info(GenerateMessage(LEVEL_INFO, message));
+    }
+
+    /**
+     * Log a debug message
+     * 
+     * @param message - log message
+     */
+    public static void LogDebug(String message)
+    {
+        _logger.debug(GenerateMessage(LEVEL_DEBUG, message));
+    }
+    
+    /**
+     * Log a trace message
+     * 
+     * @param message - log message
+     */
+    public static void LogTrace(String message)
+    {
+        _logger.trace(GenerateMessage(LEVEL_TRACE, message));
+    }
 }

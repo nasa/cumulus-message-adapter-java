@@ -110,6 +110,14 @@ The source points to a folder with the compiled .class files and dependency libr
 
 The deploy folder referenced here would contain a folder 'test_task/task/' which contains Task.class and TaskLogic.class as well as a lib folder containing dependency jars. The Cumulus Message Adapter zip would be added at the top level by the deployment step and that folder zipped and deployed to Lambda. 
 
+## Logging
+
+The message adapter library contains a logging class `AdapterLogger` that standardizes the log format for Cumulus. Static functions are provided to log error, fatal, warning, debug, info, and trace. 
+
+For example, to log an error, call:
+
+```AdapterLogger.LogError("Error message");```
+
 ## Development
 
 ### Prerequisites

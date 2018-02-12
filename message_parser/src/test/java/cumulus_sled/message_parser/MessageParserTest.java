@@ -68,7 +68,7 @@ public class MessageParserTest
         
         try
         {
-            assertEquals(expectedOutput, messageAdapter.LoadRemoteEvent(null, inputJson, null));
+            assertEquals(expectedOutput, messageAdapter.LoadRemoteEvent(inputJson, null));
         }
         catch(MessageAdapterException e)
         {
@@ -111,7 +111,7 @@ public class MessageParserTest
 
         try
         {
-            assertEquals(expectedOutput, messageAdapter.CreateNextEvent(null, inputJson, nestedEventJson, taskOutput, null));
+            assertEquals(expectedOutput, messageAdapter.CreateNextEvent(inputJson, nestedEventJson, taskOutput, null));
         }
         catch(MessageAdapterException e)
         {
@@ -146,7 +146,7 @@ public class MessageParserTest
         final Configuration config = ctx.getConfiguration();
         TestAppender appender = (TestAppender) config.getAppenders().get("TestAppender");
 
-        MessageParser parser = new MessageParser(new TestMessageAdapter());
+        MessageParser parser = new MessageParser(new TestEventMessageAdapter());
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"execution_name\": \"16b2cb46ae879f09047dfa677\",\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
         parser.RunCumulusTask(inputJson, null, new TestTask(true));
 

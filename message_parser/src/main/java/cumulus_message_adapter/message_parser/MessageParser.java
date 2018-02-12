@@ -46,6 +46,8 @@ public class MessageParser implements IMessageParser
     {
         Boolean messageAdapterDisabled = Boolean.valueOf(System.getenv("CUMULUS_MESSAGE_ADAPTER_DISABLED"));
 
+        AdapterLogger.InitializeLogger(context, input);
+
         try
         {
             // If the message adapter is disabled, call the task with original input
@@ -54,17 +56,23 @@ public class MessageParser implements IMessageParser
                 return task.PerformFunction(input, context);
             }
 
-            String remoteEvent = _messageAdapter.LoadRemoteEvent(context, input, schemaLocations);
+            String remoteEvent = _messageAdapter.LoadRemoteEvent(input, schemaLocations);
+
+            // If we pulled a remote event, set up the executions again
+            if(remoteEvent != input)
+            {
+                AdapterLogger.SetExecutions(remoteEvent);
+            }
 
             String eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context, schemaLocations);
 
             String taskOutput = task.PerformFunction(eventInput, context);
 
-            return _messageAdapter.CreateNextEvent(context, remoteEvent, eventInput, taskOutput, schemaLocations);
+            return _messageAdapter.CreateNextEvent(remoteEvent, eventInput, taskOutput, schemaLocations);
         }
         catch(Exception e)
         {
-            AdapterLogger.LogError(context, input, e.getMessage());
+            AdapterLogger.LogError(e.getMessage());
 
             if(e.getClass().getSimpleName().contains("WorkflowError") || 
                e.getClass().getSimpleName().contains("WorkflowException"))

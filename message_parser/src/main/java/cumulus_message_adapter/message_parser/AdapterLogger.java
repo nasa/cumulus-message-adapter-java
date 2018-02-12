@@ -19,6 +19,9 @@ public class AdapterLogger
 
     static final String LEVEL_ERROR = "error";
 
+    static String _executions;
+    static String _sender;
+
     /**
      * Use the keys to traverse through a JSON object to find a nested object
      * 
@@ -56,27 +59,20 @@ public class AdapterLogger
     /**
      * Generate the log message by extracting fields from the AWS Lambda context and the event
      * 
-     * @param context - AWS Lambda context
-     * @param eventString - JSON string of the event 
      * @param level - log level
      * @param message - log message
      * @return message string to log
      */
-    private static String GenerateMessage(Context context, String eventString, String level, String message)
+    private static String GenerateMessage(String level, String message)
     {
         Gson gson = new Gson();
 
         Date date = new Date();
 
-        Stack<String> executionNameKeys = new Stack<String>();
-        executionNameKeys.push("execution_name");
-        executionNameKeys.push("cumulus_meta");
-        String executionName = GetNestedObject(eventString, executionNameKeys);
-
         Map<String, String> map = new HashMap<String, String>();
-        map.put("executions", executionName);
+        map.put("executions", _executions);
         map.put("level", level);
-        map.put("sender", context != null ? context.getFunctionName() : null);
+        map.put("sender", _sender);
         map.put("message", message);
         map.put("timestamp", new Timestamp(date.getTime()).toString());
 
@@ -84,15 +80,41 @@ public class AdapterLogger
     }
 
     /**
-     * Log an error
+     * Get the executions from the original event and set for use in logs
+     * 
+     * @param event - the original event passed into Lambda
+     */
+    static void SetExecutions(String event)
+    {
+        Stack<String> executionNameKeys = new Stack<String>();
+        executionNameKeys.push("execution_name");
+        executionNameKeys.push("cumulus_meta");
+        _executions = GetNestedObject(event, executionNameKeys);
+    }
+
+    /**
+     * Initialize the logger with info from the context and original event
      * 
      * @param context - AWS Lambda context
-     * @param eventString - JSON string of the event 
+     * @param event - the original event passed into Lambda
+     */
+    static void InitializeLogger(Context context, String event)
+    {
+        // Initialize executions from event 
+        SetExecutions(event);
+
+        // Initialize sender from context
+        _sender = (context != null ? context.getFunctionName() : null);
+    }
+
+    /**
+     * Log an error
+     * 
      * @param message - log message
      */
-    public static void LogError(Context context, String event, String message)
+    public static void LogError(String message)
     {
-        _logger.error(GenerateMessage(context, event, LEVEL_ERROR, message));
+        _logger.error(GenerateMessage(LEVEL_ERROR, message));
     }
 
 }

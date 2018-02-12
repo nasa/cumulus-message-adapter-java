@@ -2,13 +2,16 @@ package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context; 
 
+import com.google.gson.Gson;
+import java.util.Map;
+
 /**
- * Stub message adapter functionality for testing
+ * Stub message adapter functionality for testing the event portion of the input
  */
-public class TestMessageAdapter extends MessageAdapter
+public class TestEventMessageAdapter extends MessageAdapter
 {
     /**
-     * Return input JSON for testing purposes
+     * Return the event portion of the input JSON for testing purposes
      * 
      * @param messageAdapterFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
      * @param inputJson - argument to message adapter function. Json that contains all of the params.
@@ -17,6 +20,10 @@ public class TestMessageAdapter extends MessageAdapter
     public String CallMessageAdapterFunction(String messageAdapterFunction, String inputJson)
         throws MessageAdapterException
     {
-        return inputJson;
+        Gson gson = new Gson();
+
+        Map map = gson.fromJson(inputJson, Map.class);
+    
+        return gson.toJson(map.get("event"));
     }
 }

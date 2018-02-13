@@ -31,13 +31,28 @@ The business logic function is where the actual work of your task occurs. The cl
 
 ## Cumulus Message Adapter interface
 
-Create an instance of ```MessageParser``` and call ```HandleMessage(String input, Context context, ITask task)``` with the following parameters:
+Create an instance of `MessageParser` and call 
+
+`RunCumulusTask(String input, Context context, ITask task)` 
+
+or 
+
+`RunCumulusTask(String input, Context context, ITask task, String inputSchemaLocation, String outputSchemaLocation, String configSchemaLocation)`
+
+with the following parameters:
   
   * `input` - the input to the Lamda function
   * `context` - the Lambda context
   * `task` - an instance of the class that implements `ITask`
   
- ```HandleMessage``` throws a ```MessageAdapterException``` when there is an error.
+  And optionally:
+  * `inputSchemaLocation` - file location of the input JSON schema, can be null 
+  * `outputSchemaLocation` - file location of the output JSON schema, can be null
+  * `configSchemaLocation` - file location of the config JSON schema, can be null
+  
+If the schema locations are not specified, the message adapter will look for schemas in a schemas directory at the root level for the files: input.json, output.json, or config.json. If the schema is not specified or missing, schema validation will not be peformed.
+  
+ ```RunCumulusTask``` throws a ```MessageAdapterException``` when there is an error.
   
 ## Example Cumulus task
 
@@ -59,7 +74,7 @@ public class Task implements RequestHandler<String, String>
 
         try
         {
-            return parser.HandleMessage(input, context, new TaskLogic());
+            return parser.RunCumulusTask(input, context, new TaskLogic());
         }
         catch(MessageAdapterException e)
         {
@@ -94,6 +109,14 @@ JavaTest:
 The source points to a folder with the compiled .class files and dependency libraries in the Lambda Java zip folder structure (details [here](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html)), not an uber-jar.
 
 The deploy folder referenced here would contain a folder 'test_task/task/' which contains Task.class and TaskLogic.class as well as a lib folder containing dependency jars. The Cumulus Message Adapter zip would be added at the top level by the deployment step and that folder zipped and deployed to Lambda. 
+
+## Logging
+
+The message adapter library contains a logging class `AdapterLogger` that standardizes the log format for Cumulus. Static functions are provided to log error, fatal, warning, debug, info, and trace. 
+
+For example, to log an error, call:
+
+```AdapterLogger.LogError("Error message");```
 
 ## Development
 

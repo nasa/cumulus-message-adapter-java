@@ -1,0 +1,14 @@
+<Configuration package="cumulus_message_adapter.message_parser.TestAppender">
+  <Appenders>
+    <TestAppender name="TestAppender">
+      <PatternLayout>
+          <pattern>%msg%n</pattern>
+      </PatternLayout>
+    </TestAppender>
+  </Appenders>
+  <Loggers>
+    <Root level="debug">
+      <AppenderRef ref="TestAppender" />
+    </Root>
+  </Loggers>
+</Configuration>

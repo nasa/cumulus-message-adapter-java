@@ -9,5 +9,6 @@ import cumulus_message_adapter.message_parser.ITask;
  */
 public interface IMessageParser
 {
-    public String HandleMessage(String input, Context context, ITask task) throws MessageAdapterException;
+    public String RunCumulusTask(String input, Context context, ITask task) throws MessageAdapterException;
+    public String RunCumulusTask(String input, Context context, ITask task, String inputSchemaLocation, String outputSchemaLocation, String configSchemaLocation) throws MessageAdapterException;
 }

@@ -1,0 +1,14 @@
+<Configuration packages="com.amazonaws.services.lambda.runtime.log4j2.LambdaAppender">
+  <Appenders>
+    <Lambda name="Lambda">
+      <PatternLayout>
+          <pattern>%msg%n</pattern>
+      </PatternLayout>
+    </Lambda>
+  </Appenders>
+  <Loggers>
+    <Root level="debug">
+      <AppenderRef ref="Lambda" />
+    </Root>
+  </Loggers>
+</Configuration>

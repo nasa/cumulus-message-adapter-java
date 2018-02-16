@@ -12,6 +12,6 @@ The handler should be set to `test_task.task.Task::handleRequest`.
 
 To use this to send a message to SNS, first a topic must be created. 
 
-The `topic_arn` should be in the `workflow_config` section of the cumulus message JSON string. To publish the Cumulus message to SNS, the `cumulus_message` should be in the `payload` section of the cumulus message JSON string. If no message is found, a test message will be published.
+The `topic_arn` should be in the `workflow_config` section of the cumulus message JSON string. To publish the Cumulus message to SNS, the `full_cumulus_message` should be in the `payload` section of the cumulus message JSON string. If no message is found, a test message will be published.
 
 The Lambda task execution role must have the `AWSLambdaSNSPublishPolicyExecutionRole` policy assigned to be able to publish a message. Memory should be at least 256MB.

@@ -56,7 +56,7 @@ public class TaskLogic implements ITask
         if(inputJson != null)
         {
             Map messageInputMap = gson.fromJson(gson.toJson(inputJson), Map.class);
-            return messageInputMap.get("cumulus_message");
+            return messageInputMap.get("full_cumulus_message");
         }
 
         return null;

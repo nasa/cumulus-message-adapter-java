@@ -24,7 +24,7 @@ public class Task implements RequestHandler<String, String>
 
         try
         {
-            return parser.HandleMessage(input, context, new TaskLogic());
+            return parser.RunCumulusTask(input, context, new TaskLogic());
         }
         catch(MessageAdapterException e)
         {

@@ -30,7 +30,7 @@ public class MessageAdapter implements IMessageAdapter
 
         try
         {
-            ProcessBuilder processBuilder = new ProcessBuilder("python", "cumulus-message-adapter.zip", messageAdapterFunction);
+            ProcessBuilder processBuilder = new ProcessBuilder("python", "cumulus-message-adapter", messageAdapterFunction);
 
             Process process = processBuilder.start();
 

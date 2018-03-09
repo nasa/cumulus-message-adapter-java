@@ -53,9 +53,10 @@ public class AdapterLogger
             if(keys.isEmpty())
             {
                 return nestedJson.toString();
+                
             }
             
-            return GetNestedObject(nestedJson.toString(), keys);
+            return GetNestedObject(gson.toJson(nestedJson), keys);
         }
 
         return null;

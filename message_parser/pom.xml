@@ -4,7 +4,7 @@
   <groupId>gov.nasa.earthdata</groupId>
   <artifactId>cumulus-message-adapter</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.1</version>
+  <version>1.2.2</version>
   <name>cumulus-message-adapter</name>
   <url>https://github.com/cumulus-nasa/cumulus-message-adapter-java</url>
   <licenses>

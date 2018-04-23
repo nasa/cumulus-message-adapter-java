@@ -147,7 +147,7 @@ public class MessageAdapter implements IMessageAdapter
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("event", gson.fromJson(remoteEventJson, Map.class));
-        map.put("message_config", nestedEventMap.get("message_config"));
+        map.put("message_config", nestedEventMap.get("messageConfig"));
         map.put("handler_response", gson.fromJson(taskJson, Map.class));
         map.put("schemas", schemaLocations);
 

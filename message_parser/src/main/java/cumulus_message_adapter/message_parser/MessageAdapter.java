@@ -14,7 +14,7 @@ import com.google.gson.GsonBuilder;
 
 public class MessageAdapter implements IMessageAdapter
 {
-    private static final int MESSAGE_ADAPTER_TIMEOUT = 10; // seconds
+    private static final int MESSAGE_ADAPTER_TIMEOUT = 120; // seconds
 
     /**
      * Call to message adapter zip to execute a message adapter function. Pass args through the process input

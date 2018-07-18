@@ -1,6 +1,6 @@
 # cumulus-message-adapter-java
 
-[![CircleCI](https://circleci.com/gh/cumulus-nasa/cumulus-message-adapter-java.svg?style=svg)](https://circleci.com/gh/cumulus-nasa/cumulus-message-adapter-java)
+[![CircleCI](https://circleci.com/gh/nasa/cumulus-message-adapter-java.svg?style=svg)](https://circleci.com/gh/nasa/cumulus-message-adapter-java)
 
 ## What is Cumulus?
 

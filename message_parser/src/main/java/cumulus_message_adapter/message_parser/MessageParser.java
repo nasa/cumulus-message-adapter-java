@@ -1,6 +1,9 @@
 package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context; 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Hanldes messages by passing the input through the message adapter and using the output as input 
@@ -47,6 +50,7 @@ public class MessageParser implements IMessageParser
         Boolean messageAdapterDisabled = Boolean.valueOf(System.getenv("CUMULUS_MESSAGE_ADAPTER_DISABLED"));
 
         AdapterLogger.InitializeLogger(context, input);
+        String eventInput = "";
 
         try
         {
@@ -64,7 +68,7 @@ public class MessageParser implements IMessageParser
                 AdapterLogger.SetExecutions(remoteEvent);
             }
 
-            String eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context, schemaLocations);
+            eventInput = _messageAdapter.LoadNestedEvent(remoteEvent, context, schemaLocations);
 
             String taskOutput = task.PerformFunction(eventInput, context);
 
@@ -77,7 +81,11 @@ public class MessageParser implements IMessageParser
             if(e.getClass().getSimpleName().contains("WorkflowError") || 
                e.getClass().getSimpleName().contains("WorkflowException"))
             {
-                return "{\"payload\":null,\"exception\":\"" + e.getMessage() + "\"}";  
+                JsonElement jelement = new JsonParser().parse(input);
+                JsonObject inputObject = jelement.getAsJsonObject();
+                inputObject.add("payload", null);
+                inputObject.addProperty("exception", e.getMessage());
+                return inputObject.toString();
             }
             
             throw new MessageAdapterException(e.getMessage(), e.getCause());

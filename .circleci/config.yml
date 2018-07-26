@@ -39,4 +39,10 @@ jobs:
         
       # run tests!
       - run: mvn -f message_parser/pom.xml integration-test
+  
+  deploy:
+    branch: master
+    commands: 
+      - mvn -s .circleci.settings.xml deploy
+
 

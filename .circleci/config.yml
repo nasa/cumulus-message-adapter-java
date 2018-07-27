@@ -45,13 +45,11 @@ jobs:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
     
-    working_directory: ~/message_parser
+    #working_directory: ~/message_parser
 
     steps:
-      - checkout
-
       # publish to clojars
-      - run: mvn -s ../.circleci.settings.xml deploy
+      - run: mvn -s ../.circleci.settings.xml -f message_parser/pom.xml deploy
 
 workflows:
   version: 2

@@ -49,7 +49,7 @@ jobs:
 
     steps:
       # publish to clojars
-      - run: mvn -s ../.circleci/settings.xml deploy
+      - run: mvn -s .circleci.settings.xml deploy
 
 workflows:
   version: 2

@@ -41,8 +41,23 @@ jobs:
       - run: mvn -f message_parser/pom.xml integration-test
   
   deploy:
-    branch: master
-    commands: 
-      - mvn -s .circleci.settings.xml deploy
+    docker:
+      # specify the version you desire here
+      - image: circleci/openjdk:8-jdk
+
+    steps: 
+      - run: mvn -s .circleci.settings.xml deploy
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
 
 

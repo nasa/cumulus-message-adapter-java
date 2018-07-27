@@ -48,6 +48,8 @@ jobs:
     working_directory: ~/message_parser
 
     steps:
+      - checkout
+
       # publish to clojars
       - run: mvn -s ../.circleci.settings.xml deploy
 

@@ -44,8 +44,11 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
+    
+    working_directory: ~/message_parser
 
-    steps: 
+    steps:
+      # publish to clojars
       - run: mvn -s .circleci.settings.xml deploy
 
 workflows:

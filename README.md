@@ -41,7 +41,7 @@ or
 
 with the following parameters:
   
-  * `input` - the input to the Lamda function
+  * `input` - the input to the Lambda function
   * `context` - the Lambda context
   * `task` - an instance of the class that implements `ITask`
   
@@ -94,7 +94,7 @@ The compiled task code, the message parser uber-jar, the cumulus message adapter
 
 During deployment, Cumulus will automatically obtain and inject the [Cumulus Message Adapter](https://github.com/cumulus-nasa/cumulus-message-adapter) zip into the compiled code and create a zip file to be deployed to Lambda.
 
-The test task in the 'task' folder of this repository would be configured in lambdas.yml as follows:
+The test task in the `task` folder of this repository would be configured in lambdas.yml as follows:
 
 ```yaml
 JavaTest:
@@ -108,7 +108,7 @@ JavaTest:
 
 The source points to a folder with the compiled .class files and dependency libraries in the Lambda Java zip folder structure (details [here](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html)), not an uber-jar.
 
-The deploy folder referenced here would contain a folder 'test_task/task/' which contains Task.class and TaskLogic.class as well as a lib folder containing dependency jars. The Cumulus Message Adapter zip would be added at the top level by the deployment step and that folder zipped and deployed to Lambda. 
+The deploy folder referenced here would contain a folder `test_task/task/` which contains Task.class and TaskLogic.class as well as a lib folder containing dependency jars. The Cumulus Message Adapter zip would be added at the top level by the deployment step and that folder zipped and deployed to Lambda. 
 
 ## Logging
 

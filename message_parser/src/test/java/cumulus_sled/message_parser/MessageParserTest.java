@@ -127,7 +127,7 @@ public class MessageParserTest
     {
         MessageParser parser = new MessageParser(new TestMessageAdapter());
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
-        String expectedOutput = "{\"payload\":null,\"exception\":\"workflow exception\"}";
+        String expectedOutput = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"payload\":null,\"exception\":\"workflow exception\"}";
 
         try
         {

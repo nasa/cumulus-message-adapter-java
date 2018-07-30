@@ -50,13 +50,6 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "message_parser/pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-          
       # publish to clojars
       - run: mvn -s .circleci/.circleci.settings.xml -f message_parser/pom.xml deploy
 

@@ -48,8 +48,10 @@ jobs:
     working_directory: ~/message_parser
 
     steps:
+      - checkout
+
       # publish to clojars
-      - run: mvn -s ../.circleci.settings.xml deploy
+      - run: mvn -s .circleci/.circleci.settings.xml -f message_parser/pom.xml deploy
 
 workflows:
   version: 2
@@ -62,5 +64,3 @@ workflows:
           filters:
             branches:
               only: master
-
-

@@ -26,6 +26,7 @@ public class AdapterLogger
 
     static String _executions;
     static String _sender;
+    static String _version;
 
     /**
      * Use the keys to traverse through a JSON object to find a nested object
@@ -79,6 +80,7 @@ public class AdapterLogger
         map.put("executions", _executions);
         map.put("level", level);
         map.put("sender", _sender);
+        map.put("version", _version);
         map.put("message", message);
         map.put("timestamp", new Timestamp(date.getTime()).toString());
 
@@ -111,6 +113,7 @@ public class AdapterLogger
 
         // Initialize sender from context
         _sender = (context != null ? context.getFunctionName() : null);
+        _version = (context != null ? context.getFunctionVersion() : null);
     }
 
     /**

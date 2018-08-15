@@ -68,7 +68,7 @@ public class MessageParserTest
         
         try
         {
-            assertEquals(expectedOutput, messageAdapter.LoadAndUpdateRemoteEvent(inputJson, null));
+            assertEquals(expectedOutput, messageAdapter.LoadAndUpdateRemoteEvent(inputJson, null, null));
         }
         catch(MessageAdapterException e)
         {

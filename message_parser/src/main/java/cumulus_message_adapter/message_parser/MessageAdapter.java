@@ -87,22 +87,24 @@ public class MessageAdapter implements IMessageAdapter
     }
 
     /**
-     * Format the arguments and call the 'loadRemoteEvent' message adapter function
+     * Format the arguments and call the 'loadAndUpdateRemoteEvent' message adapter function
      * 
      * @param eventJson - Json passed from lambda
+     * @param context - AWS Lambda context
      * @param schemaLocations - locations of JSON schemas
      * @return result of 'loadRemoteEvent'
      */
-    public String LoadRemoteEvent(String eventJson, SchemaLocations schemaLocations)
+    public String LoadAndUpdateRemoteEvent(String eventJson, Context context, SchemaLocations schemaLocations)
         throws MessageAdapterException
     {
         Gson gson = new Gson();
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("event", gson.fromJson(eventJson, Map.class));
+        map.put("context", context);
         map.put("schemas", schemaLocations);
 
-        return CallMessageAdapterFunction("loadRemoteEvent", gson.toJson(map));
+        return CallMessageAdapterFunction("loadAndUpdateRemoteEvent", gson.toJson(map));
     }
 
     /**

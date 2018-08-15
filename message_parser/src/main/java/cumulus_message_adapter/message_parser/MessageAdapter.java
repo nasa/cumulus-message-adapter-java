@@ -19,7 +19,7 @@ public class MessageAdapter implements IMessageAdapter
     /**
      * Call to message adapter zip to execute a message adapter function. Pass args through the process input
      * and read return result from process output.
-     * @param messageAdapterFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
+     * @param messageAdapterFunction - 'loadAndUpdateRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
      * @param inputJson - argument to message adapter function. Json that contains all of the params.
      * @return the return from the message adapter function
      */
@@ -92,7 +92,7 @@ public class MessageAdapter implements IMessageAdapter
      * @param eventJson - Json passed from lambda
      * @param context - AWS Lambda context
      * @param schemaLocations - locations of JSON schemas
-     * @return result of 'loadRemoteEvent'
+     * @return result of 'loadAndUpdateRemoteEvent'
      */
     public String LoadAndUpdateRemoteEvent(String eventJson, Context context, SchemaLocations schemaLocations)
         throws MessageAdapterException
@@ -110,7 +110,7 @@ public class MessageAdapter implements IMessageAdapter
     /**
      * Format the arguments and call the 'loadNestedEvent' message adapter function
      * 
-     * @param eventJson - Json from loadRemoteEvent
+     * @param eventJson - Json from loadAndUpdateRemoteEvent
      * @param context - AWS Lambda context
      * @param schemaLocations - locations of JSON schemas
      * @return result of 'loadNestedEvent'
@@ -130,7 +130,7 @@ public class MessageAdapter implements IMessageAdapter
     /**
      * Format the arguments and call the 'createNextEvent' message adapter function
      * 
-     * @param remoteEventJson - Json result from 'loadRemoteEvent'
+     * @param remoteEventJson - Json result from 'loadAndUpdateRemoteEvent'
      * @param nestedEventJson - Json result from 'loadNestedEvent'
      * @param taskJson - result from calling the task
      * @param schemaLocations - locations of JSON schemas

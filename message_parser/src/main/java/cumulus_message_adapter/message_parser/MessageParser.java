@@ -60,7 +60,7 @@ public class MessageParser implements IMessageParser
                 return task.PerformFunction(input, context);
             }
 
-            String remoteEvent = _messageAdapter.LoadRemoteEvent(input, schemaLocations);
+            String remoteEvent = _messageAdapter.LoadAndUpdateRemoteEvent(input, context, schemaLocations);
 
             // If we pulled a remote event, set up the executions again
             if(remoteEvent != input)

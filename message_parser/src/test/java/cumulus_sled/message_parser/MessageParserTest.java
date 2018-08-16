@@ -57,10 +57,10 @@ public class MessageParserTest
     }
 
     /**
-     * Test that LoadRemoteEvent converts input to JSON correctly
+     * Test that LoadAndUpdateRemoteEvent converts input to JSON correctly
      */
     @Test
-    public void testLoadRemoteEvent()
+    public void testLoadAndUpdateRemoteEvent()
     {
         TestMessageAdapter messageAdapter = new TestMessageAdapter();
         String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
@@ -68,7 +68,7 @@ public class MessageParserTest
         
         try
         {
-            assertEquals(expectedOutput, messageAdapter.LoadRemoteEvent(inputJson, null));
+            assertEquals(expectedOutput, messageAdapter.LoadAndUpdateRemoteEvent(inputJson, null, null));
         }
         catch(MessageAdapterException e)
         {

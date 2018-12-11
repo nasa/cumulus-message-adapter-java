@@ -213,11 +213,19 @@ public class MessageParserTest
         TestAppender appender = (TestAppender) config.getAppenders().get("TestAppender");
 
         MessageParser parser = new MessageParser(new TestEventMessageAdapter());
-        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"state_machine\":\"arn:aws:states:us-west-2:254524764682:stateMachine:podaacDevCumulusIngestGranu-J3EAwfUq70X9\",\"execution_name\":\"16b2cb46ae879f09047dfa677\",\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
-        parser.RunCumulusTask(inputJson, null, new TestTask(true));
+        try
+        {
+            String inputJsonString = AdapterUtilities.loadResourceToString("context.input.json");
+            parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
 
-        // Test that the part of the message minus the actual timestamp is correct
-        String expectedLog = "{\"executions\":\"16b2cb46ae879f09047dfa677\",\"level\":\"error\",\"message\":\"workflow exception\",\"timestamp\"";
-        assertEquals(expectedLog, appender.GetLogMessage(1).substring(0, expectedLog.length()));
+            // Test that the part of the message minus the actual timestamp is correct
+            String expectedLog = "{\"executions\":\"16b2cb46ae879f09047dfa677\",\"level\":\"error\",\"message\":\"workflow exception\",\"timestamp\"";
+            assertEquals(expectedLog, appender.GetLogMessage(1).substring(0, expectedLog.length()));
+        }
+        catch(MessageAdapterException|IOException e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 }

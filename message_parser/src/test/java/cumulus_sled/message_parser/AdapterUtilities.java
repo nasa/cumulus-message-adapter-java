@@ -100,7 +100,7 @@ public class AdapterUtilities {
      * @return
      * @throws IOException
      */
-    private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+    private static File createNewFileFromZipEntry(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 
         String destDirPath = destinationDir.getCanonicalPath();
@@ -131,7 +131,7 @@ public class AdapterUtilities {
             if (zipEntry.isDirectory())
                 Files.createDirectories(fileSystem.getPath(dest + File.separator + zipEntry.getName()));
             else {
-                final File newFile = newFile(new File(dest), zipEntry);
+                final File newFile = createNewFileFromZipEntry(new File(dest), zipEntry);
                 final FileOutputStream fos = new FileOutputStream(newFile);
                 int len;
                 while ((len = zis.read(buffer)) > 0) {

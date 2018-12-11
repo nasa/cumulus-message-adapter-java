@@ -32,7 +32,7 @@
     <dependency>
       <groupId>gov.nasa.earthdata</groupId>
       <artifactId>cumulus-message-adapter</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.8</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>

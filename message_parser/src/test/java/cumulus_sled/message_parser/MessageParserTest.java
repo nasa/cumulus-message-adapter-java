@@ -8,7 +8,13 @@ import cumulus_message_adapter.message_parser.MessageAdapterException;
 import cumulus_message_adapter.message_parser.MessageParser;
 
 import org.junit.Test;
+import org.junit.BeforeClass;
+import org.junit.AfterClass;
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Unit test for Message Parser test.
@@ -16,22 +22,52 @@ import static org.junit.Assert.*;
 public class MessageParserTest
 {
     /**
+     * load the example output json message from file and update it with TestTask output
+     */
+    private Map getExpectedTestTaskOutputJson() throws IOException
+    {
+        String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
+        Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
+        HashMap<String, String> taskMap = new HashMap<String, String>();
+        taskMap.put("task", "complete");
+        expectedOutputJson.put("payload", taskMap);
+        return expectedOutputJson;
+    }
+
+    @BeforeClass
+    public static void setup() throws IOException
+    {
+        AdapterUtilities.deleteCMA();
+        AdapterUtilities.downloadCMA();
+    }
+ 
+    @AfterClass
+    public static void teardown() throws IOException
+    {
+        AdapterUtilities.deleteCMA();
+    }
+
+    /*
      * Test that the message handler is hitting all of the correct functions and converting the params
      * to JSON correctly
      */
     @Test
     public void testMessageAdapter()
     {
-        MessageParser parser = new MessageParser(new TestMessageAdapter());
-        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
-        String expectedOutput = "{\"message_config\":null,\"schemas\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
-
+        MessageParser parser = new MessageParser(new MessageAdapter());
         try
         {
-            assertEquals(expectedOutput, parser.RunCumulusTask(inputJson, null, new TestTask(false)));
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+            Map expectedOutputJson = getExpectedTestTaskOutputJson();
+
+            String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
+
+            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOuputJson);
         }
-        catch(MessageAdapterException e)
+        catch(MessageAdapterException|IOException e)
         {
+            e.printStackTrace();
             fail();
         }
     }
@@ -42,16 +78,21 @@ public class MessageParserTest
     @Test
     public void testSchemaLocations()
     {
-        MessageParser parser = new MessageParser(new TestMessageAdapter());
-        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
-        String expectedOutput = "{\"message_config\":null,\"schemas\":{\"input\":\"input.json\",\"output\":\"output.json\",\"config\":\"config.json\"},\"handler_response\":{\"task\":\"complete\"},\"event\":{\"schemas\":{\"input\":\"input.json\",\"output\":\"output.json\",\"config\":\"config.json\"},\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}}}";
+        MessageParser parser = new MessageParser(new MessageAdapter());
 
         try
         {
-            assertEquals(expectedOutput, parser.RunCumulusTask(inputJson, null, new TestTask(false), "input.json", "output.json", "config.json"));
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+            Map expectedOutputJson = getExpectedTestTaskOutputJson();
+
+            String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false), "input.json", "output.json", "config.json");
+        
+            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOuputJson);
         }
-        catch(MessageAdapterException e)
+        catch(MessageAdapterException|IOException e)
         {
+            e.printStackTrace();
             fail();
         }
     }
@@ -62,16 +103,24 @@ public class MessageParserTest
     @Test
     public void testLoadAndUpdateRemoteEvent()
     {
-        TestMessageAdapter messageAdapter = new TestMessageAdapter();
-        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
-        String expectedOutput = "{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}}";
-        
+        MessageAdapter messageAdapter = new MessageAdapter();
+
         try
         {
-            assertEquals(expectedOutput, messageAdapter.LoadAndUpdateRemoteEvent(inputJson, null, null));
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+            // the message is not changed
+            String expectedJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+
+            Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
+
+            String taskOutputString = messageAdapter.LoadAndUpdateRemoteEvent(inputJsonString, null, null);
+    
+            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            assertEquals(expectedOutputJson, expectedOutputJson);
         }
-        catch(MessageAdapterException e)
+        catch(MessageAdapterException|IOException e)
         {
+            e.printStackTrace();
             fail();
         }
     }
@@ -82,16 +131,18 @@ public class MessageParserTest
     @Test
     public void testLoadNestedEvent()
     {
-        TestMessageAdapter messageAdapter = new TestMessageAdapter();
-        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
-        String expectedOutput = "{\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}}";
-        
+        MessageAdapter messageAdapter = new MessageAdapter();
+
         try
         {
-            assertEquals(expectedOutput, messageAdapter.LoadNestedEvent(inputJson, null, null));
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+            String expectedOutput = "{\"input\": {\"anykey\": \"anyvalue\"}, \"config\": {\"bar\": \"baz\"}}";
+            
+            assertEquals(expectedOutput, messageAdapter.LoadNestedEvent(inputJsonString, null, null));
         }
-        catch(MessageAdapterException e)
+        catch(MessageAdapterException|IOException e)
         {
+            e.printStackTrace();
             fail();
         }
     }
@@ -102,19 +153,25 @@ public class MessageParserTest
     @Test
     public void testCreateNextEvent()
     {
-        TestMessageAdapter messageAdapter = new TestMessageAdapter();
-        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}";
-        String nestedEventJson = "{\"input\": {\"anykey\": \"anyvalue\"}, \"config\": {\"bar\": \"baz\"}}";
+        MessageAdapter messageAdapter = new MessageAdapter();
+        String nestedEventJson = "{\"input\": {\"anykey\": \"anyvalue\"}, \"messageConfig\": {\"bar\": \"baz\"}}";
         String taskOutput = "{\"task\":\"complete\"}";
-    
-        String expectedOutput = "{\"message_config\":null,\"schemas\":null,\"handler_response\":{\"task\":\"complete\"},\"event\":{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"cumulus_meta\":{\"task\":\"Example\",\"message_source\":\"local\",\"id\":\"id-1234\"},\"meta\":{\"foo\":\"bar\"},\"payload\":{\"anykey\":\"anyvalue\"}}}";
 
         try
         {
-            assertEquals(expectedOutput, messageAdapter.CreateNextEvent(inputJson, nestedEventJson, taskOutput, null));
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+
+            String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
+            Map expectedOutputJson = getExpectedTestTaskOutputJson();
+
+            String taskOutputString = messageAdapter.CreateNextEvent(inputJsonString, nestedEventJson, taskOutput, null);
+    
+            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOuputJson);
         }
-        catch(MessageAdapterException e)
+        catch(MessageAdapterException|IOException e)
         {
+            e.printStackTrace();
             fail();
         }
     }
@@ -125,16 +182,25 @@ public class MessageParserTest
     @Test
     public void testException()
     {
-        MessageParser parser = new MessageParser(new TestMessageAdapter());
-        String inputJson = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}}}";
-        String expectedOutput = "{\"workflow_config\":{\"Example\":{\"bar\":\"baz\"}},\"payload\":null,\"exception\":\"workflow exception\"}";
+        MessageParser parser = new MessageParser(new MessageAdapter());
 
         try
         {
-            assertEquals(expectedOutput, parser.RunCumulusTask(inputJson, null, new TestTask(true)));
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+
+            String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
+            Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
+            expectedOutputJson.put("payload", null);
+            expectedOutputJson.put("exception", "workflow exception");
+
+            String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
+
+            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOuputJson);
         }
-        catch(MessageAdapterException e)
+        catch(MessageAdapterException|IOException e)
         {
+            e.printStackTrace();
             fail();
         }
     }

@@ -12,7 +12,8 @@
     "execution_name": "16b2cb46ae879f09047dfa677"
   },
   "meta": {
-    "foo": "bar"
+    "foo": "bar",
+    "workflow_tasks": {}
   },
   "payload": {
     "anykey": "anyvalue"

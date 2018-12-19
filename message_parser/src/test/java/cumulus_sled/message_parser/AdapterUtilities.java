@@ -23,7 +23,7 @@ import java.util.zip.ZipInputStream;
 import com.google.gson.Gson;
 
 /**
- * Utilities for downloading and cleaning up Cumulus Message Adaptet package
+ * Utilities for downloading and cleaning up Cumulus Message Adapter package
  */
 public class AdapterUtilities {
     public static final String MESSAGE_ADAPTER_VERSION = "MESSAGE_ADAPTER_VERSION";
@@ -42,6 +42,7 @@ public class AdapterUtilities {
     private static void downloadFile(String url, String localFilename) throws IOException {
         InputStream in = new URL(url).openStream();
         Files.copy(in, Paths.get(localFilename), StandardCopyOption.REPLACE_EXISTING);
+        in.close();
         System.out.println(url + " is downloaded to " + localFilename);
     }
 

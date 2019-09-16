@@ -205,6 +205,31 @@ public class MessageParserTest
         }
     }
 
+
+    @Test
+    public void testLoggerWithCmaConfiguration() throws MessageAdapterException
+    {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        TestAppender appender = (TestAppender) config.getAppenders().get("TestAppender");
+
+        MessageParser parser = new MessageParser(new TestEventMessageAdapter());
+        try
+        {
+            String inputJsonString = AdapterUtilities.loadResourceToString("parameter.input.json");
+            parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
+
+            // Test that the part of the message minus the actual timestamp is correct
+            String expectedLog = "{\"executions\":\"someexecutionname\",\"level\":\"error\",\"message\":\"workflow exception\",\"timestamp\"";
+            assertEquals(expectedLog, appender.GetLogMessage(1).substring(0, expectedLog.length()));
+        }
+        catch(MessageAdapterException|IOException e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     @Test
     public void testLogger() throws MessageAdapterException
     {
@@ -220,7 +245,7 @@ public class MessageParserTest
 
             // Test that the part of the message minus the actual timestamp is correct
             String expectedLog = "{\"executions\":\"16b2cb46ae879f09047dfa677\",\"level\":\"error\",\"message\":\"workflow exception\",\"timestamp\"";
-            assertEquals(expectedLog, appender.GetLogMessage(1).substring(0, expectedLog.length()));
+            assertEquals(expectedLog, appender.GetLogMessage(2).substring(0, expectedLog.length()));
         }
         catch(MessageAdapterException|IOException e)
         {

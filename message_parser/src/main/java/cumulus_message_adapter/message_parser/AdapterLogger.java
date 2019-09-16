@@ -26,6 +26,7 @@ public class AdapterLogger
 
     static String _executions;
     static String _sender;
+    static String _version;
 
     /**
      * Use the keys to traverse through a JSON object to find a nested object
@@ -53,7 +54,6 @@ public class AdapterLogger
             if(keys.isEmpty())
             {
                 return nestedJson.toString();
-                
             }
             
             return GetNestedObject(gson.toJson(nestedJson), keys);
@@ -79,6 +79,7 @@ public class AdapterLogger
         map.put("executions", _executions);
         map.put("level", level);
         map.put("sender", _sender);
+        map.put("version", _version);
         map.put("message", message);
         map.put("timestamp", new Timestamp(date.getTime()).toString());
 
@@ -87,14 +88,28 @@ public class AdapterLogger
 
     /**
      * Get the executions from the original event and set for use in logs
-     * 
+     *
      * @param event - the original event passed into Lambda
      */
     static void SetExecutions(String event)
     {
+        Gson gson = new Gson();
+        Map map = gson.fromJson(event, Map.class);
+        if(map == null)
+        {
+            _executions = null;
+            return;
+        }
+
         Stack<String> executionNameKeys = new Stack<String>();
         executionNameKeys.push("execution_name");
         executionNameKeys.push("cumulus_meta");
+
+        if(map.get("cma") != null)
+        {
+            executionNameKeys.push("event");
+            executionNameKeys.push("cma");  
+        }
         _executions = GetNestedObject(event, executionNameKeys);
     }
 
@@ -111,6 +126,7 @@ public class AdapterLogger
 
         // Initialize sender from context
         _sender = (context != null ? context.getFunctionName() : null);
+        _version = (context != null ? context.getFunctionVersion() : null);
     }
 
     /**

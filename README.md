@@ -130,9 +130,13 @@ Build with ```mvn -B package```
 
 ### Integration Tests
 
-Integration tests are located in the test folder in ```MessageParserTest.java```. To build and run the tests, run 
+Integration tests are located in the test folder in ```MessageParserTest.java```. By default, the latest [Cumulus Message Adapter](https://github.com/cumulus-nasa/cumulus-message-adapter) will be downloaded and used for the tests. To build and run the tests using the latest version of `Cumulus Message Adapter', run
 
 ```mvn -B test```
+
+To build and run the tests using a different version of `Cumulus Message Adapter`, run
+
+```MESSAGE_ADAPTER_VERSION=vx.x.xx mvn -B test```
 
 ### Running the example task
 

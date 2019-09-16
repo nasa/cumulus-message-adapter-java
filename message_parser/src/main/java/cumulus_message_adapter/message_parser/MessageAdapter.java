@@ -1,6 +1,6 @@
 package cumulus_message_adapter.message_parser;
 
-import com.amazonaws.services.lambda.runtime.Context; 
+import com.amazonaws.services.lambda.runtime.Context;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -14,12 +14,12 @@ import com.google.gson.GsonBuilder;
 
 public class MessageAdapter implements IMessageAdapter
 {
-    private static final int MESSAGE_ADAPTER_TIMEOUT = 120; // seconds
+    private static final int MESSAGE_ADAPTER_TIMEOUT = 60 * 5; // seconds
 
     /**
      * Call to message adapter zip to execute a message adapter function. Pass args through the process input
      * and read return result from process output.
-     * @param messageAdapterFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
+     * @param messageAdapterFunction - 'loadAndUpdateRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
      * @param inputJson - argument to message adapter function. Json that contains all of the params.
      * @return the return from the message adapter function
      */
@@ -39,24 +39,27 @@ public class MessageAdapter implements IMessageAdapter
             writer.close();
 
             Boolean processComplete = false;
-            
+
             try
             {
                 processComplete = process.waitFor(MESSAGE_ADAPTER_TIMEOUT, TimeUnit.SECONDS);
             }
             catch(InterruptedException e)
             {
-                // Log that there was an error and then it'll go into the error code below where we can 
+                // Log that there was an error and then it'll go into the error code below where we can
                 // get and log the output from stderr
                 AdapterLogger.LogError(String.format("Cumulus Message Adapter error: %s: %s", messageAdapterFunction, e.getMessage()));
             }
 
-            int exitValue = process.exitValue();
+            int exitValue = 1;
+            if(processComplete) {
+                exitValue = process.exitValue();
+            }
 
             if(processComplete && exitValue == 0) // Success
             {
                 Scanner scanner = new Scanner(process.getInputStream());
-                if(scanner.hasNextLine()) 
+                if(scanner.hasNextLine())
                 {
                     messageAdapterOutput = scanner.nextLine();
                 }
@@ -66,9 +69,9 @@ public class MessageAdapter implements IMessageAdapter
             {
                 Scanner scanner = new Scanner(process.getErrorStream());
                 StringBuilder errorMessageBuilder = new StringBuilder();
-                while(scanner.hasNextLine()) 
+                while(scanner.hasNextLine())
                 {
-                    errorMessageBuilder.append(scanner.nextLine());  
+                    errorMessageBuilder.append(scanner.nextLine());
                 }
                 scanner.close();
 
@@ -80,35 +83,37 @@ public class MessageAdapter implements IMessageAdapter
         catch(IOException e)
         {
             AdapterLogger.LogError("Unable to find Cumulus Message Adapter");
-            throw new MessageAdapterException("Unable to find Cumulus Message Adapter", e.getCause());      
+            throw new MessageAdapterException("Unable to find Cumulus Message Adapter", e.getCause());
         }
 
-        return messageAdapterOutput;        
+        return messageAdapterOutput;
     }
 
     /**
-     * Format the arguments and call the 'loadRemoteEvent' message adapter function
-     * 
+     * Format the arguments and call the 'loadAndUpdateRemoteEvent' message adapter function
+     *
      * @param eventJson - Json passed from lambda
+     * @param context - AWS Lambda context
      * @param schemaLocations - locations of JSON schemas
-     * @return result of 'loadRemoteEvent'
+     * @return result of 'loadAndUpdateRemoteEvent'
      */
-    public String LoadRemoteEvent(String eventJson, SchemaLocations schemaLocations)
+    public String LoadAndUpdateRemoteEvent(String eventJson, Context context, SchemaLocations schemaLocations)
         throws MessageAdapterException
     {
         Gson gson = new Gson();
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("event", gson.fromJson(eventJson, Map.class));
+        map.put("context", context);
         map.put("schemas", schemaLocations);
 
-        return CallMessageAdapterFunction("loadRemoteEvent", gson.toJson(map));
+        return CallMessageAdapterFunction("loadAndUpdateRemoteEvent", gson.toJson(map));
     }
 
     /**
      * Format the arguments and call the 'loadNestedEvent' message adapter function
-     * 
-     * @param eventJson - Json from loadRemoteEvent
+     *
+     * @param eventJson - Json from loadAndUpdateRemoteEvent
      * @param context - AWS Lambda context
      * @param schemaLocations - locations of JSON schemas
      * @return result of 'loadNestedEvent'
@@ -127,8 +132,8 @@ public class MessageAdapter implements IMessageAdapter
 
     /**
      * Format the arguments and call the 'createNextEvent' message adapter function
-     * 
-     * @param remoteEventJson - Json result from 'loadRemoteEvent'
+     *
+     * @param remoteEventJson - Json result from 'loadAndUpdateRemoteEvent'
      * @param nestedEventJson - Json result from 'loadNestedEvent'
      * @param taskJson - result from calling the task
      * @param schemaLocations - locations of JSON schemas
@@ -139,8 +144,8 @@ public class MessageAdapter implements IMessageAdapter
     {
         // Use GsonBuilder here to output message_config as null in null case
         // instead of dropping the key
-        GsonBuilder gsonBuilder = new GsonBuilder();  
-        gsonBuilder.serializeNulls();  
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.serializeNulls();
         Gson gson = gsonBuilder.create();
 
         Map nestedEventMap = gson.fromJson(nestedEventJson, Map.class);

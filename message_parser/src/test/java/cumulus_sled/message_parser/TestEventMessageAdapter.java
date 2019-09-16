@@ -13,7 +13,7 @@ public class TestEventMessageAdapter extends MessageAdapter
     /**
      * Return the event portion of the input JSON for testing purposes
      * 
-     * @param messageAdapterFunction - 'loadRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
+     * @param messageAdapterFunction - 'loadAndUpdateRemoteEvent', 'loadNestedEvent', or 'createNextEvent'
      * @param inputJson - argument to message adapter function. Json that contains all of the params.
      * @return inputJson to test JSON conversions
      */

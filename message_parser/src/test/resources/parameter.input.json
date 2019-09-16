@@ -1,0 +1,25 @@
+{
+  "cma": {
+    "event": {
+      "workflow_config": {
+        "Example": {
+         "bar": "baz"
+        }
+      },
+      "cumulus_meta": {
+        "task": "Example",
+        "message_source": "local",
+        "id": "id-1234",
+        "state_machine": "arn:aws:states:us-west-2:254524764682:stateMachine:podaacDevCumulusIngestGranu-J3EAwfUq70X9",
+        "execution_name": "someexecutionname"
+      },
+      "meta": {
+        "foo": "bar",
+        "workflow_tasks": {}
+      },
+      "payload": {
+        "anykey": "anyvalue"
+      }
+    }
+  }
+}

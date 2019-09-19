@@ -54,7 +54,6 @@ public class AdapterLogger
             if(keys.isEmpty())
             {
                 return nestedJson.toString();
-                
             }
             
             return GetNestedObject(gson.toJson(nestedJson), keys);
@@ -89,14 +88,28 @@ public class AdapterLogger
 
     /**
      * Get the executions from the original event and set for use in logs
-     * 
+     *
      * @param event - the original event passed into Lambda
      */
     static void SetExecutions(String event)
     {
+        Gson gson = new Gson();
+        Map map = gson.fromJson(event, Map.class);
+        if(map == null)
+        {
+            _executions = null;
+            return;
+        }
+
         Stack<String> executionNameKeys = new Stack<String>();
         executionNameKeys.push("execution_name");
         executionNameKeys.push("cumulus_meta");
+
+        if(map.get("cma") != null)
+        {
+            executionNameKeys.push("event");
+            executionNameKeys.push("cma");  
+        }
         _executions = GetNestedObject(event, executionNameKeys);
     }
 

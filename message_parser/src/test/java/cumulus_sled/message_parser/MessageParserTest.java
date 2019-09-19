@@ -40,7 +40,7 @@ public class MessageParserTest
         AdapterUtilities.deleteCMA();
         AdapterUtilities.downloadCMA();
     }
- 
+
     @AfterClass
     public static void teardown() throws IOException
     {
@@ -72,6 +72,39 @@ public class MessageParserTest
         }
     }
 
+    /*
+     * Test that the message handler is hitting all of the correct functions and converting the params
+     * to JSON correctly if an alternate path is specified
+     */
+    @Test
+    public void testMessageAdapterAlternate()
+    {
+        class MessageAdapterMock extends MessageAdapter {
+            public String GetMessageAdapterEnvironmentVariable()
+            {
+                return "alternate-cumulus-message-adapter";
+            }
+        }
+
+        MessageParser parser = new MessageParser(new MessageAdapterMock());
+        try
+        {
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+            Map expectedOutputJson = getExpectedTestTaskOutputJson();
+
+            String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
+
+            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOuputJson);
+        }
+        catch(MessageAdapterException|IOException e)
+        {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+
     /**
      * Test that when passing in schema locations they are serialized to JSON correctly
      */
@@ -86,7 +119,7 @@ public class MessageParserTest
             Map expectedOutputJson = getExpectedTestTaskOutputJson();
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false), "input.json", "output.json", "config.json");
-        
+
             Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         }
@@ -114,7 +147,7 @@ public class MessageParserTest
             Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
 
             String taskOutputString = messageAdapter.LoadAndUpdateRemoteEvent(inputJsonString, null, null);
-    
+
             Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, expectedOutputJson);
         }
@@ -137,7 +170,7 @@ public class MessageParserTest
         {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
             String expectedOutput = "{\"input\": {\"anykey\": \"anyvalue\"}, \"config\": {\"bar\": \"baz\"}}";
-            
+
             assertEquals(expectedOutput, messageAdapter.LoadNestedEvent(inputJsonString, null, null));
         }
         catch(MessageAdapterException|IOException e)
@@ -165,7 +198,7 @@ public class MessageParserTest
             Map expectedOutputJson = getExpectedTestTaskOutputJson();
 
             String taskOutputString = messageAdapter.CreateNextEvent(inputJsonString, nestedEventJson, taskOutput, null);
-    
+
             Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         }

@@ -16,6 +16,11 @@ public class MessageAdapter implements IMessageAdapter
 {
     private static final int MESSAGE_ADAPTER_TIMEOUT = 60 * 5; // seconds
 
+    public String GetMessageAdapterEnvironmentVariable()
+    {
+        return System.getenv("CUMULUS_MESSAGE_ADAPTER_DIR");
+    }
+
     /**
      * Call to message adapter zip to execute a message adapter function. Pass args through the process input
      * and read return result from process output.
@@ -27,11 +32,15 @@ public class MessageAdapter implements IMessageAdapter
         throws MessageAdapterException
     {
         String messageAdapterOutput = "";
+        String messageAdapterPath = "cumulus-message-adapter";
+        String messageAdapterDir = GetMessageAdapterEnvironmentVariable();
+        if(messageAdapterDir != null) {
+            messageAdapterPath = messageAdapterDir;
+        }
 
         try
         {
-            ProcessBuilder processBuilder = new ProcessBuilder("python", "cumulus-message-adapter", messageAdapterFunction);
-
+            ProcessBuilder processBuilder = new ProcessBuilder("python", messageAdapterPath, messageAdapterFunction);
             Process process = processBuilder.start();
 
             OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());

@@ -31,6 +31,7 @@ public class AdapterUtilities {
     public static final String CMA_DOWNLOAD_URL_PREFIX = "https://github.com/nasa/cumulus-message-adapter/releases/download/";
     public static final String CMA_FILENAME = "cumulus-message-adapter.zip";
     public static final String CMA_DIRECTORYNAME = "cumulus-message-adapter";
+    public static final String CMA_ALTERNATE_DIRECTORY = "alternate-cumulus-message-adapter";
 
     /**
      * Download file from given url
@@ -160,6 +161,8 @@ public class AdapterUtilities {
         downloadFile(url, zipFile);
         System.out.println("unzip " + zipFile + " to " + currentDirectory + File.separator + CMA_DIRECTORYNAME);
         unzipFile(zipFile, currentDirectory + File.separator + CMA_DIRECTORYNAME);
+        System.out.println("unzip " + zipFile + " to " + currentDirectory + File.separator + CMA_ALTERNATE_DIRECTORY);
+        unzipFile(zipFile, currentDirectory + File.separator + CMA_ALTERNATE_DIRECTORY);
     }
 
     /**
@@ -171,12 +174,29 @@ public class AdapterUtilities {
         String currentDirectory = System.getProperty("user.dir");
         String zipFile = currentDirectory + File.separator + CMA_FILENAME;
         String zipDirectory = currentDirectory + File.separator + CMA_DIRECTORYNAME;
+        String altZipDirectory = currentDirectory + File.separator + CMA_ALTERNATE_DIRECTORY;
+
+        String[] deletePaths = {zipDirectory, altZipDirectory};
+
 
         Files.deleteIfExists(Paths.get(zipFile));
 
-        if (Files.exists(Paths.get(zipDirectory)))
-            Files.walk(Paths.get(zipDirectory)).sorted(Comparator.reverseOrder()).map(Path::toFile)
+        for(String path : deletePaths) {
+            removeCMAPaths(path);
+        }
+    }
+
+
+    /**
+     * Given a path, recursively removes all files and that directory if it exists.
+     *
+     * @throws IOException
+     */
+    private static Void removeCMAPaths(String directory) throws IOException {
+        if (Files.exists(Paths.get(directory)))
+            Files.walk(Paths.get(directory)).sorted(Comparator.reverseOrder()).map(Path::toFile)
                     .forEach(File::delete);
+        return null;
     }
 
     /**

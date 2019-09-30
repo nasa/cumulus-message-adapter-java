@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -30,7 +31,6 @@ public class AdapterUtilities {
     public static final String CMA_GITHUB_PATH_URL = "https://api.github.com/repos/nasa/cumulus-message-adapter/releases/latest";
     public static final String CMA_DOWNLOAD_URL_PREFIX = "https://github.com/nasa/cumulus-message-adapter/releases/download/";
     public static final String CMA_FILENAME = "cumulus-message-adapter.zip";
-    public static final String CMA_DIRECTORYNAME = "cumulus-message-adapter";
     public static final String CMA_ALTERNATE_DIRECTORY = "alternate-cumulus-message-adapter";
 
     /**
@@ -152,17 +152,15 @@ public class AdapterUtilities {
      *
      * @throws IOException
      */
-    public static void downloadCMA() throws IOException {
+    public static void downloadCMA(String path) throws IOException {
         String version = (System.getenv(MESSAGE_ADAPTER_VERSION) != null) ? System.getenv(MESSAGE_ADAPTER_VERSION)
                 : fetchLatestMessageAdapterRelease();
         String url = CMA_DOWNLOAD_URL_PREFIX + version + File.separator + CMA_FILENAME;
         String currentDirectory = System.getProperty("user.dir");
         String zipFile = currentDirectory + File.separator + CMA_FILENAME;
         downloadFile(url, zipFile);
-        System.out.println("unzip " + zipFile + " to " + currentDirectory + File.separator + CMA_DIRECTORYNAME);
-        unzipFile(zipFile, currentDirectory + File.separator + CMA_DIRECTORYNAME);
-        System.out.println("unzip " + zipFile + " to " + currentDirectory + File.separator + CMA_ALTERNATE_DIRECTORY);
-        unzipFile(zipFile, currentDirectory + File.separator + CMA_ALTERNATE_DIRECTORY);
+        System.out.println("unzip " + zipFile + " to " + currentDirectory + File.separator + path);
+        unzipFile(zipFile, currentDirectory + File.separator + path);
     }
 
     /**
@@ -170,22 +168,14 @@ public class AdapterUtilities {
      *
      * @throws IOException
      */
-    public static void deleteCMA() throws IOException {
+    public static void deleteCMA(String path) throws IOException {
         String currentDirectory = System.getProperty("user.dir");
         String zipFile = currentDirectory + File.separator + CMA_FILENAME;
-        String zipDirectory = currentDirectory + File.separator + CMA_DIRECTORYNAME;
-        String altZipDirectory = currentDirectory + File.separator + CMA_ALTERNATE_DIRECTORY;
-
-        String[] deletePaths = {zipDirectory, altZipDirectory};
-
+        String zipDirectory = currentDirectory + File.separator + path;
 
         Files.deleteIfExists(Paths.get(zipFile));
-
-        for(String path : deletePaths) {
-            removeCMAPaths(path);
-        }
+        removeCMAPaths(zipDirectory);
     }
-
 
     /**
      * Given a path, recursively removes all files and that directory if it exists.
@@ -240,4 +230,18 @@ public class AdapterUtilities {
         Gson gson = new Gson();
         return gson.toJson(map);
     }
+
+    /**
+     * load the example output json message from file and update it with TestTask output
+     */
+    public static Map getExpectedTestTaskOutputJson() throws IOException
+    {
+        String expectedJsonString = loadResourceToString("basic.output.json");
+        Map expectedOutputJson = convertJsonStringToMap(expectedJsonString);
+        HashMap<String, String> taskMap = new HashMap<String, String>();
+        taskMap.put("task", "complete");
+        expectedOutputJson.put("payload", taskMap);
+        return expectedOutputJson;
+    }
+
 }

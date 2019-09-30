@@ -92,7 +92,7 @@ The compiled task code, the message parser uber-jar, the cumulus message adapter
 
 ## Usage in Cumulus Deployment
 
-For documenation on how to utilize this package in a Cumulus Deployment, view the [Cumulus Workflow Documenation](https://nasa.github.io/cumulus/docs/workflows/input_output).
+For documenation on how to utilize this package in a Cumulus Deployment, please view the [Cumulus Workflow Lambda Documentation](https://nasa.github.io/cumulus/docs/workflows/lambda#deploy-a-lambda) and the [Cumulus Workflow Input/Output Documentation](https://nasa.github.io/cumulus/docs/workflows/input_output).
 
 ## Logging
 

@@ -92,27 +92,11 @@ The compiled task code, the message parser uber-jar, the cumulus message adapter
 
 ## Usage in Cumulus Deployment
 
-During deployment, Cumulus will automatically obtain and inject the [Cumulus Message Adapter](https://github.com/cumulus-nasa/cumulus-message-adapter) zip into the compiled code and create a zip file to be deployed to Lambda.
-
-The test task in the 'task' folder of this repository would be configured in lambdas.yml as follows:
-
-```yaml
-JavaTest:
-  handler: test_task.task.Task::handleRequest
-  timeout: 300
-  source: '../cumulus-message-adapter-java/deploy/'
-  useMessageAdapter: true
-  runtime: java8
-  memory: 256
-```
-
-The source points to a folder with the compiled .class files and dependency libraries in the Lambda Java zip folder structure (details [here](https://docs.aws.amazon.com/lambda/latest/dg/create-deployment-pkg-zip-java.html)), not an uber-jar.
-
-The deploy folder referenced here would contain a folder 'test_task/task/' which contains Task.class and TaskLogic.class as well as a lib folder containing dependency jars. The Cumulus Message Adapter zip would be added at the top level by the deployment step and that folder zipped and deployed to Lambda. 
+For documenation on how to utilize this package in a Cumulus Deployment, please view the [Cumulus Workflow Lambda Documentation](https://nasa.github.io/cumulus/docs/workflows/lambda#deploy-a-lambda) and the [Cumulus Workflow Input/Output Documentation](https://nasa.github.io/cumulus/docs/workflows/input_output).
 
 ## Logging
 
-The message adapter library contains a logging class `AdapterLogger` that standardizes the log format for Cumulus. Static functions are provided to log error, fatal, warning, debug, info, and trace. 
+The message adapter library contains a logging class `AdapterLogger` that standardizes the log format for Cumulus. Static functions are provided to log error, fatal, warning, debug, info, and trace.
 
 For example, to log an error, call:
 

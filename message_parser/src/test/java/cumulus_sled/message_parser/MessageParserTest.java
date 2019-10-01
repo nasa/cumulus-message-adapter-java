@@ -13,7 +13,6 @@ import org.junit.AfterClass;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -21,30 +20,17 @@ import java.util.Map;
  */
 public class MessageParserTest
 {
-    /**
-     * load the example output json message from file and update it with TestTask output
-     */
-    private Map getExpectedTestTaskOutputJson() throws IOException
-    {
-        String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
-        Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
-        HashMap<String, String> taskMap = new HashMap<String, String>();
-        taskMap.put("task", "complete");
-        expectedOutputJson.put("payload", taskMap);
-        return expectedOutputJson;
-    }
-
     @BeforeClass
     public static void setup() throws IOException
     {
-        AdapterUtilities.deleteCMA();
-        AdapterUtilities.downloadCMA();
+        AdapterUtilities.deleteCMA("cumulus-message-adapter");
+        AdapterUtilities.downloadCMA("cumulus-message-adapter");
     }
- 
+
     @AfterClass
     public static void teardown() throws IOException
     {
-        AdapterUtilities.deleteCMA();
+        AdapterUtilities.deleteCMA("cumulus-message-adapter");
     }
 
     /*
@@ -58,7 +44,7 @@ public class MessageParserTest
         try
         {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
-            Map expectedOutputJson = getExpectedTestTaskOutputJson();
+            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
 
@@ -72,6 +58,7 @@ public class MessageParserTest
         }
     }
 
+
     /**
      * Test that when passing in schema locations they are serialized to JSON correctly
      */
@@ -83,10 +70,10 @@ public class MessageParserTest
         try
         {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
-            Map expectedOutputJson = getExpectedTestTaskOutputJson();
+            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false), "input.json", "output.json", "config.json");
-        
+
             Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         }
@@ -114,7 +101,7 @@ public class MessageParserTest
             Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
 
             String taskOutputString = messageAdapter.LoadAndUpdateRemoteEvent(inputJsonString, null, null);
-    
+
             Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, expectedOutputJson);
         }
@@ -137,7 +124,7 @@ public class MessageParserTest
         {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
             String expectedOutput = "{\"input\": {\"anykey\": \"anyvalue\"}, \"config\": {\"bar\": \"baz\"}}";
-            
+
             assertEquals(expectedOutput, messageAdapter.LoadNestedEvent(inputJsonString, null, null));
         }
         catch(MessageAdapterException|IOException e)
@@ -162,10 +149,10 @@ public class MessageParserTest
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
 
             String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
-            Map expectedOutputJson = getExpectedTestTaskOutputJson();
+            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = messageAdapter.CreateNextEvent(inputJsonString, nestedEventJson, taskOutput, null);
-    
+
             Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         }

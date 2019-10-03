@@ -4,7 +4,7 @@
   <groupId>gov.nasa.earthdata</groupId>
   <artifactId>cumulus-message-adapter</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.9</version>
+  <version>1.2.10</version>
   <name>cumulus-message-adapter</name>
   <url>https://github.com/cumulus-nasa/cumulus-message-adapter-java</url>
   <licenses>
@@ -71,7 +71,7 @@
         <source>1.8</source>
         <target>1.8</target>
       </configuration>
-    </plugin>  
+    </plugin>
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-surefire-plugin</artifactId>

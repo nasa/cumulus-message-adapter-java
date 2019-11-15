@@ -4,7 +4,6 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 import cumulus_message_adapter.message_parser.MessageParser;
-import cumulus_message_adapter.message_parser.ITask;
 import cumulus_message_adapter.message_parser.MessageAdapterException;
 
 /**

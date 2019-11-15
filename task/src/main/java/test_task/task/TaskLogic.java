@@ -5,8 +5,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import cumulus_message_adapter.message_parser.AdapterLogger;
 import cumulus_message_adapter.message_parser.ITask;
 
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
-import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.*;
 import com.amazonaws.regions.*;
 
@@ -80,8 +80,7 @@ public class TaskLogic implements ITask
 
             if(topicArn != null)
             {
-                AmazonSNSClient snsClient = new AmazonSNSClient(new DefaultAWSCredentialsProviderChain());		                           
-                snsClient.setRegion(Region.getRegion(Regions.US_EAST_1));
+                AmazonSNS snsClient =  AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
                 Object cumulusMessage = GetCumulusMessage(input);
                 String message = "Test Message";

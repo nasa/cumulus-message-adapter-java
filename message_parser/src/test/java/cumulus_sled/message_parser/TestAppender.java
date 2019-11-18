@@ -54,4 +54,9 @@ public class TestAppender extends AbstractAppender {
     {
         return _log.get(index);
     }
+
+    public void ClearMessages()
+    {
+        _log.clear();
+    }
 }

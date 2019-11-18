@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [v1.2.11] - 2019-11-15
+### Added
+- CUMULUS-1634 - Adds three new keys `granules`, `parentArn`, and `stackName` to the AdapterLogger class
+
 ## [v1.2.10] - 2019-10-03
 
 ### Added

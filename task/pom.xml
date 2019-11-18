@@ -7,6 +7,12 @@
   <version>1.0</version>
   <name>task</name>
   <url>http://maven.apache.org</url>
+  <repositories>
+    <repository>
+      <id>clojars-repository</id>
+      <url>https://clojars.org/repo</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -29,10 +35,11 @@
       <artifactId>aws-java-sdk-core</artifactId>
       <version>1.11.275</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/gov.nasa.earthdata/cumulus-message-adapter -->
     <dependency>
       <groupId>gov.nasa.earthdata</groupId>
       <artifactId>cumulus-message-adapter</artifactId>
-      <version>1.2.8</version>
+      <version>1.2.11</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>

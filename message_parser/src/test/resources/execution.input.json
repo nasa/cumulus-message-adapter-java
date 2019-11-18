@@ -8,12 +8,10 @@
     "task": "Example",
     "message_source": "local",
     "id": "id-1234",
-    "parentExecutionArn": "arn:aws:states:us-east-1:12345:execution:DiscoverGranules:8768aebb",
-    "asyncOperationId": "async-id-123"
+    "execution_name": "execution_value"
   },
   "meta": {
-    "foo": "bar",
-    "stack": "cumulus-stack"
+    "foo": "bar"
   },
   "payload": {
     "anykey": "anyvalue"

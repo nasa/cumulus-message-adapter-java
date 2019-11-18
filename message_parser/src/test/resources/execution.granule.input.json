@@ -1,0 +1,74 @@
+{
+  "workflow_config": {
+    "Example": {
+      "bar": "baz"
+    }
+  },
+  "cumulus_meta": {
+    "task": "Example",
+    "message_source": "local",
+    "id": "id-1234",
+    "execution_name": "execution_value"
+  },
+  "meta": {
+    "foo": "bar"
+  },
+  "payload": {
+    "granules": [
+      {
+        "granuleId": "MOD09GQ.A2016358.h13v04.006.2016360104606",
+        "dataType": "MOD09GQ",
+        "version": "6",
+        "files": [
+          {
+            "name": "MOD09GQ.A2016358.h13v04.006.2016360104606.hdf",
+            "bucket": "cumulus-devseed-protected",
+            "checksum": null,
+            "filename": "s3://cumulus-devseed-protected/MOD09GQ.A2016358.h13v04.006.2016360104606.hdf",
+            "size": 17865615,
+            "path": "granules",
+            "url_path": "/",
+            "checksumType": null
+          },
+          {
+            "name": "MOD09GQ.A2016358.h13v04.006.2016360104606.hdf.met",
+            "bucket": "cumulus-devseed-private",
+            "checksum": null,
+            "filename": "s3://cumulus-devseed-private/MOD09GQ.A2016358.h13v04.006.2016360104606.hdf.met",
+            "size": 44118,
+            "path": "granules",
+            "url_path": "/",
+            "checksumType": null
+          }
+        ]
+      },
+      {
+        "granuleId": "MOD09GQ.A2016358.h13v04.007.2017",
+        "dataType": "MOD09GQ",
+        "version": "6",
+        "files": [
+          {
+            "name": "MOD09GQ.A2016358.h13v04.007.2017.hdf",
+            "bucket": "cumulus-devseed-protected",
+            "checksum": null,
+            "filename": "s3://cumulus-devseed-protected/MOD09GQ.A2016358.h13v04.007.2017.hdf",
+            "size": 17865615,
+            "path": "granules",
+            "url_path": "/",
+            "checksumType": null
+          },
+          {
+            "name": "MOD09GQ.A2016358.h13v04.007.2017.hdf.met",
+            "bucket": "cumulus-devseed-private",
+            "checksum": null,
+            "filename": "s3://cumulus-devseed-private/MOD09GQ.A2016358.h13v04.007.2017.hdf.met",
+            "size": 44118,
+            "path": "granules",
+            "url_path": "/",
+            "checksumType": null
+          }
+        ]
+      }
+    ]
+  }
+}

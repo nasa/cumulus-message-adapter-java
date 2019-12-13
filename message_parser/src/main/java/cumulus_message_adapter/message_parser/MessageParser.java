@@ -1,12 +1,15 @@
 package cumulus_message_adapter.message_parser;
 
-import com.amazonaws.services.lambda.runtime.Context; 
+import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 /**
- * Hanldes messages by passing the input through the message adapter and using the output as input 
+ * Hanldes messages by passing the input through the message adapter and using the output as input
  * for business logic. The output of the business logic is passed back to the message adapter.
  */
 public class MessageParser implements IMessageParser
@@ -26,7 +29,7 @@ public class MessageParser implements IMessageParser
 
     /**
      * Constructor, takes an instance of the message adapter. Can be used for testing
-     * 
+     *
      * @param messageAdapter - instance of the message adapter to use
      */
     public MessageParser(IMessageAdapter messageAdapter)
@@ -37,7 +40,7 @@ public class MessageParser implements IMessageParser
     /**
      * Handles the message by passing the input through the message adapter with the context serialized as Json.
      * Calls task business logic and passes the output back to the message adapter
-     * 
+     *
      * @param input - input Json
      * @param context - AWS Lambda context
      * @param task - callback to business logic function
@@ -76,9 +79,18 @@ public class MessageParser implements IMessageParser
         }
         catch(Exception e)
         {
+            String errorOutput = e.getMessage();
+            // If necessary, capture stack trace as error output for logging.
+            if (errorOutput == null) {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                errorOutput = sw.toString();
+            }
+
             AdapterLogger.LogError(e.getMessage());
 
-            if(e.getClass().getSimpleName().contains("WorkflowError") || 
+            if(e.getClass().getSimpleName().contains("WorkflowError") ||
                e.getClass().getSimpleName().contains("WorkflowException"))
             {
                 JsonElement jelement = new JsonParser().parse(input);
@@ -87,8 +99,8 @@ public class MessageParser implements IMessageParser
                 inputObject.addProperty("exception", e.getMessage());
                 return inputObject.toString();
             }
-            
-            throw new MessageAdapterException(e.getMessage(), e.getCause());
+
+            throw new MessageAdapterException(e.toString(), e);
         }
     }
 
@@ -96,7 +108,7 @@ public class MessageParser implements IMessageParser
      * Passes the input through the message adapter and runs the task with the output from the message adapter.
      * Passes the output of the task back to the message adapter and uses the output to create the next event.
      * Schema locations default to the default schema location.
-     * 
+     *
      * @param input - input Json
      * @param context - AWS Lambda context
      * @param task - callback to business logic function
@@ -113,7 +125,7 @@ public class MessageParser implements IMessageParser
      * Passes the output of the task back to the message adapter and uses the output to create the next event.
      * Message adapter will validate schemas against the JSON schema files found at the given locations or the files
      * found at the default location if schema locations are null.
-     * 
+     *
      * @param input - input Json
      * @param context - AWS Lambda context
      * @param task - callback to business logic function
@@ -126,7 +138,7 @@ public class MessageParser implements IMessageParser
         throws MessageAdapterException
     {
         SchemaLocations schemaLocations = null;
-        
+
         if(inputSchemaLocation != null || outputSchemaLocation != null || configSchemaLocation != null)
         {
             schemaLocations = new SchemaLocations(inputSchemaLocation, outputSchemaLocation, configSchemaLocation);

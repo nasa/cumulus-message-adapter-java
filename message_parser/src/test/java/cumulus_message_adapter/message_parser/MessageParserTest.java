@@ -225,13 +225,6 @@ public class MessageParserTest {
         testLogger(inputJsonFile, expectedLog);
     }
 
-    // @Test
-    // public void testNewline() throws MessageAdapterException {
-    //     String inputJsonFile = "cma-fail.input.json";
-    //     String expectedLog = "{\"executions\":\"execution_value\",\"parentArn\":\"arn:aws:states:us-east-1:12345:execution:DiscoverGranules:8768aebb\",\"level\":\"error\",\"asyncOperationId\":\"async-id-123\",\"stackName\":\"cumulus-stack\",\"message\":\"workflow exception\",\"timestamp\"";
-    //     testLogger(inputJsonFile, expectedLog);
-    // }
-
     private void testLogger(String inputJsonFile, String expectedLog) throws MessageAdapterException {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
@@ -248,9 +241,6 @@ public class MessageParserTest {
             assertEquals(expectedLog, appenderMessage.substring(0, expectedLog.length()));
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
-
-            // String appenderMessage2 = appender.GetLogMessage(0);
-
             fail();
         } finally {
             appender.ClearMessages();

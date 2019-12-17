@@ -21,8 +21,6 @@ public class TestTask implements ITask
     public String PerformFunction(String input, Context context)
         throws Exception
     {
-        // throw new NullPointerException();
-
         if(_throwWorkflowException)
         {
             throw new WorkflowException("workflow exception");

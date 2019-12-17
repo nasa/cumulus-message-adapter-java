@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ### Changed
 
-- Updated `MessageParser.HandleMessage()` to capture stack traces for error logging and properly handle any thrown `NullPointerException` from task code
+- Updated `MessageParser.HandleMessage()` to properly handle errors where `e.getMessage()` is `null`, such as a `NullPointerException`
 
 ## [v1.2.11] - 2019-11-15
 

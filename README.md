@@ -2,14 +2,14 @@
 
 [![CircleCI](https://circleci.com/gh/nasa/cumulus-message-adapter-java.svg?style=svg)](https://circleci.com/gh/nasa/cumulus-message-adapter-java)
 
-## What is Cumulus?
+## About Cumulus
 
 Cumulus is a cloud-based data ingest, archive, distribution and management
 prototype for NASA's future Earth science data streams.
 
 Read the [Cumulus Documentation](https://cumulus-nasa.github.io/)
 
-## What is the Cumulus Message Adapter?
+## About the Cumulus Message Adapter
 
 The Cumulus Message Adapter is a library that adapts incoming messages in the
 Cumulus protocol to a format more easily consumable by Cumulus tasks, invokes
@@ -27,33 +27,34 @@ methods in your task module: a handler function and a business logic function.
 
 The handler function is a standard Lambda handler function.
 
-The business logic function is where the actual work of your task occurs. The class containing this work should implement the `ITask` interface and the ```String PerformFunction(String input, Context context);``` function. `input` is the simplified JSON from the message adapter and `context` is the AWS Lambda Context.
+The business logic function is where the actual work of your task occurs. The class containing this work should implement the `ITask` interface and the `String PerformFunction(String input, Context context);` function. `input` is the simplified JSON from the message adapter and `context` is the AWS Lambda Context.
 
 ## Cumulus Message Adapter interface
 
-Create an instance of `MessageParser` and call 
+Create an instance of `MessageParser` and call
 
-`RunCumulusTask(String input, Context context, ITask task)` 
+`RunCumulusTask(String input, Context context, ITask task)`
 
-or 
+or
 
 `RunCumulusTask(String input, Context context, ITask task, String inputSchemaLocation, String outputSchemaLocation, String configSchemaLocation)`
 
 with the following parameters:
-  
-  * `input` - the input to the Lamda function
-  * `context` - the Lambda context
-  * `task` - an instance of the class that implements `ITask`
-  
-  And optionally:
-  * `inputSchemaLocation` - file location of the input JSON schema, can be null 
-  * `outputSchemaLocation` - file location of the output JSON schema, can be null
-  * `configSchemaLocation` - file location of the config JSON schema, can be null
-  
+
+* `input` - the input to the Lamda function
+* `context` - the Lambda context
+* `task` - an instance of the class that implements `ITask`
+
+And optionally:
+
+* `inputSchemaLocation` - file location of the input JSON schema, can be null
+* `outputSchemaLocation` - file location of the output JSON schema, can be null
+* `configSchemaLocation` - file location of the config JSON schema, can be null
+
 If the schema locations are not specified, the message adapter will look for schemas in a schemas directory at the root level for the files: input.json, output.json, or config.json. If the schema is not specified or missing, schema validation will not be peformed.
-  
- ```RunCumulusTask``` throws a ```MessageAdapterException``` when there is an error.
-  
+
+ `RunCumulusTask` throws a `MessageAdapterException` when there is an error.
+
 ## Example Cumulus task
 
 ```java
@@ -67,7 +68,7 @@ public class TaskLogic implements ITask
 ```
 
 ```java
-public class Task implements RequestHandler<String, String> 
+public class Task implements RequestHandler<String, String>
 {
     public String handleRequest(String input, Context context) {
         MessageParser parser = new MessageParser();
@@ -100,27 +101,27 @@ The message adapter library contains a logging class `AdapterLogger` that standa
 
 For example, to log an error, call:
 
-```AdapterLogger.LogError("Error message");```
+`AdapterLogger.LogError("Error message");``
 
 ## Development
 
 ### Prerequisites
 
-  * [Apache Maven](https://maven.apache.org/install.html)
-  
+* [Apache Maven](https://maven.apache.org/install.html)
+
 ### Building
 
-Build with ```mvn -B package```
+Build with `mvn -B package`
 
 ### Integration Tests
 
-Integration tests are located in the test folder in ```MessageParserTest.java```. By default, the latest [Cumulus Message Adapter](https://github.com/cumulus-nasa/cumulus-message-adapter) will be downloaded and used for the tests. To build and run the tests using the latest version of `Cumulus Message Adapter', run
+Integration tests are located in the test folder in `MessageParserTest.java`. By default, the latest [Cumulus Message Adapter](https://github.com/cumulus-nasa/cumulus-message-adapter) will be downloaded and used for the tests. To build and run the tests using the latest version of `Cumulus Message Adapter', run
 
-```mvn -B test```
+`mvn -B test`
 
 To build and run the tests using a different version of `Cumulus Message Adapter`, run
 
-```MESSAGE_ADAPTER_VERSION=vx.x.xx mvn -B test```
+`MESSAGE_ADAPTER_VERSION=vx.x.xx mvn -B test`
 
 ### Running the example task
 
@@ -128,11 +129,11 @@ Follow the installation instructions above for the example task.
 
 If updating the version of the message parser, make sure to update the pom.xml in the task code. To build the task with this dependency, run:
 
-```mvn clean install -U```
+`mvn clean install -U`
 
-then ```mvn -B package```
+then `mvn -B package`
 
-## Why?
+## Benefits of the Cumulus Message Adapter
 
 This approach has a few major advantages:
 

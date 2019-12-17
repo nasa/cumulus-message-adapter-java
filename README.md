@@ -2,7 +2,7 @@
 
 [![CircleCI](https://circleci.com/gh/nasa/cumulus-message-adapter-java.svg?style=svg)](https://circleci.com/gh/nasa/cumulus-message-adapter-java)
 
-This repository contains a client library for integrating Java Lambda task code with the core [Cumulus Message Adapter](https://github.com/cumulus-nasa/cumulus-message-adapter).
+This repository contains a client library for integrating Lambda task code written in Java with the core [Cumulus Message Adapter](#about-the-cumulus-message-adapter-cma).
 
 ## About Cumulus
 
@@ -13,7 +13,7 @@ Read the [Cumulus Documentation](https://cumulus-nasa.github.io/)
 
 ## About the Cumulus Message Adapter (CMA)
 
-The Cumulus Message Adapter (CMA) is a library that adapts incoming messages in the
+The [Cumulus Message Adapter (CMA)](https://github.com/cumulus-nasa/cumulus-message-adapter) is a library that adapts incoming messages in the
 Cumulus protocol to a format more easily consumable by Cumulus tasks, invokes
 the tasks, and then adapts their response back to the Cumulus message protocol
 to be sent to the next task.

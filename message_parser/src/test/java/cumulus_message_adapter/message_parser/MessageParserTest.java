@@ -253,8 +253,7 @@ public class MessageParserTest {
             parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
 
             // Test that the part of the message minus the actual timestamp is correct
-            String appenderMessage = appender.GetLogMessage(0);
-            assertEquals(expectedLog, appenderMessage.substring(0, expectedLog.length()));
+            assertEquals(expectedLog, appender.GetLogMessage(0).substring(0, expectedLog.length()));
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
             fail();

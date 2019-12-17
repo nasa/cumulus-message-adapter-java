@@ -2,7 +2,7 @@ package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context;
 
-import cumulus_message_adapter.message_parser.WorkflowException; 
+import cumulus_message_adapter.message_parser.WorkflowException;
 
 public class TestTask implements ITask
 {
@@ -21,6 +21,8 @@ public class TestTask implements ITask
     public String PerformFunction(String input, Context context)
         throws Exception
     {
+        // throw new NullPointerException();
+
         if(_throwWorkflowException)
         {
             throw new WorkflowException("workflow exception");

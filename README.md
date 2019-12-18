@@ -102,7 +102,7 @@ mvn -B package
 
 These instructions assume that your task is using Maven for dependency management.
 
-1. Get the current version number of the CMA Java client library from [`message_parser/pom.xml`](./message_parser/pom.xml:
+1. Get the current version number of the CMA Java client library from [`message_parser/pom.xml`](./message_parser/pom.xml):
 
     ```xml
     <version>1.2.12</version>

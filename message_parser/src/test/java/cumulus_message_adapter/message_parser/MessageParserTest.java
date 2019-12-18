@@ -145,7 +145,7 @@ public class MessageParserTest {
     }
 
     /**
-     * Test the response when there is an WorkflowException
+     * Test the response when there is a WorkflowException
      */
     @Test
     public void testWorkflowException() {
@@ -181,7 +181,7 @@ public class MessageParserTest {
             parser.RunCumulusTask(inputJsonString, null, new TestExceptionTask());
         } catch (MessageAdapterException | IOException e) {
             assertTrue(e.getMessage().endsWith("java.lang.NullPointerException"));
-            assertEquals(e.getCause().getClass().getCanonicalName(), "java.lang.NullPointerException");
+            assertEquals(e.getCause().getClass(), NullPointerException.class);
         }
     }
 

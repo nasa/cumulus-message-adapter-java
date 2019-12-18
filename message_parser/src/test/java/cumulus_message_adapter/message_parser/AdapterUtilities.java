@@ -21,7 +21,9 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import java.lang.reflect.Type;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Utilities for downloading and cleaning up Cumulus Message Adapter package
@@ -89,8 +91,7 @@ public class AdapterUtilities {
                 : CMA_GITHUB_PATH_URL;
 
         String jsonString = getJsonResponse(url);
-        Gson gson = new Gson();
-        Map map = gson.fromJson(jsonString, Map.class);
+        Map<String, Object> map = convertJsonStringToMap(jsonString);
         return (String) map.get("tag_name");
     }
 
@@ -214,10 +215,10 @@ public class AdapterUtilities {
      * @param jsonString The json string
      * @return The converted Map object
      */
-    public static Map convertJsonStringToMap(String jsonString) {
+    public static Map<String,Object> convertJsonStringToMap(String jsonString) {
         Gson gson = new Gson();
-        Map expectedOutputJson = gson.fromJson(jsonString, Map.class);
-        return expectedOutputJson;
+        Type mapObjectType = new TypeToken<Map<String, Object>>() {}.getType();
+        return gson.fromJson(jsonString, mapObjectType);
     }
 
     /**
@@ -226,7 +227,7 @@ public class AdapterUtilities {
      * @param map The Map object
      * @return The converted json string
      */
-    public static String convertMapToJsonString(Map map) {
+    public static String convertMapToJsonString(Map<String,Object> map) {
         Gson gson = new Gson();
         return gson.toJson(map);
     }
@@ -234,10 +235,10 @@ public class AdapterUtilities {
     /**
      * load the example output json message from file and update it with TestTask output
      */
-    public static Map getExpectedTestTaskOutputJson() throws IOException
+    public static Map<String, Object> getExpectedTestTaskOutputJson() throws IOException
     {
         String expectedJsonString = loadResourceToString("basic.output.json");
-        Map expectedOutputJson = convertJsonStringToMap(expectedJsonString);
+        Map<String, Object> expectedOutputJson = convertJsonStringToMap(expectedJsonString);
         HashMap<String, String> taskMap = new HashMap<String, String>();
         taskMap.put("task", "complete");
         expectedOutputJson.put("payload", taskMap);

@@ -45,11 +45,11 @@ public class MessageParserTest {
         MessageParser parser = new MessageParser(new MessageAdapter());
         try {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
-            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
+            Map<String, Object> expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
 
-            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();

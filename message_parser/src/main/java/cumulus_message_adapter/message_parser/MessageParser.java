@@ -88,7 +88,7 @@ public class MessageParser implements IMessageParser
                 errorOutput = sw.toString();
             }
 
-            AdapterLogger.LogError(e.getMessage());
+            AdapterLogger.LogError(errorOutput);
 
             if(e.getClass().getSimpleName().contains("WorkflowError") ||
                e.getClass().getSimpleName().contains("WorkflowException"))

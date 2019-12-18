@@ -38,7 +38,7 @@ public class AdapterLogger {
 
     /**
      * Use the keys to traverse through a JSON object to find a nested object
-     * 
+     *
      * @param json - the json as a String
      * @param keys - stack of keys
      * @return the found nested obect in string form, null if cannot be found
@@ -85,7 +85,7 @@ public class AdapterLogger {
     /**
      * Generate the log message by extracting fields from the AWS Lambda context and
      * the event
-     * 
+     *
      * @param level   - log level
      * @param message - log message
      * @return message string to log
@@ -215,7 +215,7 @@ public class AdapterLogger {
 
     /**
      * Initialize the logger with info from the context and original event
-     * 
+     *
      * @param context - AWS Lambda context
      * @param event   - the original event passed into Lambda
      */
@@ -234,7 +234,7 @@ public class AdapterLogger {
 
     /**
      * Log an error
-     * 
+     *
      * @param message - log message
      */
     public static void LogError(String message) {
@@ -243,7 +243,7 @@ public class AdapterLogger {
 
     /**
      * Log a fatal error
-     * 
+     *
      * @param message - log message
      */
     public static void LogFatal(String message) {
@@ -252,7 +252,7 @@ public class AdapterLogger {
 
     /**
      * Log a warning
-     * 
+     *
      * @param message - log message
      */
     public static void LogWarning(String message) {
@@ -261,7 +261,7 @@ public class AdapterLogger {
 
     /**
      * Log an info message
-     * 
+     *
      * @param message - log message
      */
     public static void LogInfo(String message) {
@@ -270,7 +270,7 @@ public class AdapterLogger {
 
     /**
      * Log a debug message
-     * 
+     *
      * @param message - log message
      */
     public static void LogDebug(String message) {
@@ -279,7 +279,7 @@ public class AdapterLogger {
 
     /**
      * Log a trace message
-     * 
+     *
      * @param message - log message
      */
     public static void LogTrace(String message) {

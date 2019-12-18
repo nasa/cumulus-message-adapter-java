@@ -79,14 +79,11 @@ public class MessageParser implements IMessageParser
         }
         catch(Exception e)
         {
-            String errorOutput = e.getMessage();
-            // If necessary, capture stack trace as error output for logging.
-            if (errorOutput == null) {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
-                e.printStackTrace(pw);
-                errorOutput = sw.toString();
-            }
+            // Capture the stack trace as error output for logging.
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String errorOutput = sw.toString();
 
             AdapterLogger.LogError(errorOutput);
 

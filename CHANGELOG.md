@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [v1.2.13] - 2020-01-02
+
+### Added
+
+- Added `JsonUtilities` class to help with converting JSON to and from string and `Map` with proper type casting
+
 ## [v1.2.12] - 2019-12-17
 
 ### Changed

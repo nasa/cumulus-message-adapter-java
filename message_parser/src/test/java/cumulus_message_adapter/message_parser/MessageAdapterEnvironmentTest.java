@@ -1,9 +1,5 @@
 package cumulus_message_adapter.message_parser;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-
 import cumulus_message_adapter.message_parser.MessageAdapterException;
 import cumulus_message_adapter.message_parser.MessageParser;
 
@@ -49,11 +45,11 @@ public class MessageAdapterEnvironmentTest
         try
         {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
-            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
+            Map<String, Object> expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
 
-            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         }
         catch(MessageAdapterException|IOException e)

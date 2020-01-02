@@ -20,7 +20,7 @@ public class TestEventMessageAdapter extends MessageAdapter
     {
         Gson gson = new Gson();
 
-        Map<String, Object> inputMap = AdapterUtilities.convertJsonStringToMap(inputJson);
+        Map<String, Object> inputMap = JsonUtilities.convertJsonStringToMap(inputJson);
 
         return gson.toJson(inputMap.get("event"));
     }

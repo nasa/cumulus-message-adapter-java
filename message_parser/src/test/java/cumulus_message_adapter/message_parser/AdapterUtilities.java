@@ -21,10 +21,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import java.lang.reflect.Type;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 /**
  * Utilities for downloading and cleaning up Cumulus Message Adapter package
  */
@@ -91,7 +87,7 @@ public class AdapterUtilities {
                 : CMA_GITHUB_PATH_URL;
 
         String jsonString = getJsonResponse(url);
-        Map<String, Object> map = convertJsonStringToMap(jsonString);
+        Map<String, Object> map = JsonUtilities.convertJsonStringToMap(jsonString);
         return (String) map.get("tag_name");
     }
 
@@ -210,35 +206,12 @@ public class AdapterUtilities {
     }
 
     /**
-     * Convert json string to Map object
-     *
-     * @param jsonString The json string
-     * @return The converted Map object
-     */
-    public static Map<String,Object> convertJsonStringToMap(String jsonString) {
-        Gson gson = new Gson();
-        Type mapObjectType = new TypeToken<Map<String, Object>>() {}.getType();
-        return gson.fromJson(jsonString, mapObjectType);
-    }
-
-    /**
-     * Convert Map object to json string
-     *
-     * @param map The Map object
-     * @return The converted json string
-     */
-    public static String convertMapToJsonString(Map<String,Object> map) {
-        Gson gson = new Gson();
-        return gson.toJson(map);
-    }
-
-    /**
      * load the example output json message from file and update it with TestTask output
      */
     public static Map<String, Object> getExpectedTestTaskOutputJson() throws IOException
     {
         String expectedJsonString = loadResourceToString("basic.output.json");
-        Map<String, Object> expectedOutputJson = convertJsonStringToMap(expectedJsonString);
+        Map<String, Object> expectedOutputJson = JsonUtilities.convertJsonStringToMap(expectedJsonString);
         HashMap<String, String> taskMap = new HashMap<String, String>();
         taskMap.put("task", "complete");
         expectedOutputJson.put("payload", taskMap);

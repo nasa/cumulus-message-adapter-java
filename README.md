@@ -47,7 +47,7 @@ RunCumulusTask(String input, Context context, ITask task, String inputSchemaLoca
 
 with the following parameters:
 
-* `input` - the input to the Lamda function
+* `input` - the input to the Lambda function
 * `context` - the Lambda context
 * `task` - an instance of the class that implements `ITask`
 

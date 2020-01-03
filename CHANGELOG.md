@@ -8,7 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ### Added
 
-- Added `JsonUtilities` class to help with converting JSON to and from string and `Map` with proper type casting
+- Added `Json` class to help with converting JSON to and from string and `Map` with proper type casting
+  - `Json.toMap()` converts JSON string to a `Map`
+  - `Json.fromMap()` converts a `Map` to a JSON string
 
 ## [v1.2.12] - 2019-12-17
 

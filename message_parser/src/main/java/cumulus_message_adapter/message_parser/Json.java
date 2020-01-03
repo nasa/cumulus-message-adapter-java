@@ -6,9 +6,6 @@ import java.lang.reflect.Type;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-/**
- * Utilities for converting JSON to string/map
- */
 public class Json {
 
   /**
@@ -17,9 +14,9 @@ public class Json {
   private Json() {}
 
   /**
-   * Convert json string to Map object
+   * Convert JSON string to Map object
    *
-   * @param jsonString The json string
+   * @param jsonString The JSON string
    * @return The converted Map object
    */
   public static Map<String, Object> toMap(String jsonString) {

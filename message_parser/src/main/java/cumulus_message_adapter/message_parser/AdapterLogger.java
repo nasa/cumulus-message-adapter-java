@@ -46,7 +46,7 @@ public class AdapterLogger {
     private static String GetNestedObject(String json, Stack<String> keys) {
         Gson gson = new Gson();
 
-        Map map = gson.fromJson(json, Map.class);
+        Map<String, Object> map = JsonUtils.toMap(json);
 
         if (map != null && !keys.isEmpty()) {
             String key = keys.pop();
@@ -162,12 +162,12 @@ public class AdapterLogger {
             if (granulesString != null) {
                 // get granuleId from each of the granules in the list
                 Type listType = new TypeToken<List<Map<String, Object>>>(){}.getType();
-                List<Map<String, Object>> granules = (List<Map<String, Object>>) gson.fromJson(granulesString,
+                List<Map<String, Object>> granules = gson.fromJson(granulesString,
                         listType);
 
                 if (granules != null && !granules.isEmpty()) {
                     ArrayList<String> granuleIds = new ArrayList<String>();
-                    for (Map granule : granules) {
+                    for (Map<String, Object> granule : granules) {
                         granuleIds.add(granule.get("granuleId").toString());
                     }
                     _granules = gson.toJson(granuleIds);

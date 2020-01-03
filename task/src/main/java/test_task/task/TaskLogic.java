@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 
 import cumulus_message_adapter.message_parser.AdapterLogger;
 import cumulus_message_adapter.message_parser.ITask;
-import cumulus_message_adapter.message_parser.JsonUtilities;
+import cumulus_message_adapter.message_parser.Json;
 
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
@@ -27,13 +27,13 @@ public class TaskLogic implements ITask
     {
         Gson gson = new Gson();
 
-        Map<String, Object> inputMap = JsonUtilities.convertJsonStringToMap(input);
+        Map<String, Object> inputMap = Json.toMap(input);
         Object config = inputMap.get("config");
 
         if(config != null)
         {
             String configJson = gson.toJson(config);
-            Map<String, Object> configMap = JsonUtilities.convertJsonStringToMap(configJson);
+            Map<String, Object> configMap = Json.toMap(configJson);
             return configMap.get("topic_arn");
         }
 
@@ -50,13 +50,13 @@ public class TaskLogic implements ITask
     {
         Gson gson = new Gson();
 
-        Map<String, Object> inputMap = JsonUtilities.convertJsonStringToMap(input);
+        Map<String, Object> inputMap = Json.toMap(input);
         Object messageInput = inputMap.get("input");
 
         if(messageInput != null)
         {
             String messageInputJson = gson.toJson(messageInput);
-            Map<String, Object> messageInputMap = JsonUtilities.convertJsonStringToMap(messageInputJson);
+            Map<String, Object> messageInputMap = Json.toMap(messageInputJson);
             return messageInputMap.get("full_cumulus_message");
         }
 

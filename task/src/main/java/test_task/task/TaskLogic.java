@@ -4,7 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 
 import cumulus_message_adapter.message_parser.AdapterLogger;
 import cumulus_message_adapter.message_parser.ITask;
-import cumulus_message_adapter.message_parser.Json;
+import cumulus_message_adapter.message_parser.JsonUtils;
 
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;

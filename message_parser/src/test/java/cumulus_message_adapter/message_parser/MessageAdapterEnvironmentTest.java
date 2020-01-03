@@ -49,7 +49,7 @@ public class MessageAdapterEnvironmentTest
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
 
-            Map<String, Object> taskOuputJson = Json.toMap(taskOutputString);
+            Map<String, Object> taskOuputJson = JsonUtils.toMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         }
         catch(MessageAdapterException|IOException e)

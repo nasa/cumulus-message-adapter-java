@@ -8,8 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ### Added
 
-- Added `Json` class to help with converting from a JSON string to a `Map` with proper type assignment
-  - `Json.toMap()` converts JSON string to a `Map`
+- Added `JsonUtils` class to help with converting from a JSON string to a `Map` with proper type assignment
+  - `JsonUtils.toMap()` converts JSON string to a `Map`
 
 ## [v1.2.12] - 2019-12-17
 

@@ -6,12 +6,12 @@ import java.lang.reflect.Type;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class Json {
+public class JsonUtils {
 
   /**
    * Private no argument constructor for utility class
    */
-  private Json() {}
+  private JsonUtils() {}
 
   /**
    * Convert JSON string to Map object

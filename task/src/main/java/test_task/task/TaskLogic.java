@@ -27,13 +27,13 @@ public class TaskLogic implements ITask
     {
         Gson gson = new Gson();
 
-        Map<String, Object> inputMap = Json.toMap(input);
+        Map<String, Object> inputMap = JsonUtils.toMap(input);
         Object config = inputMap.get("config");
 
         if(config != null)
         {
             String configJson = gson.toJson(config);
-            Map<String, Object> configMap = Json.toMap(configJson);
+            Map<String, Object> configMap = JsonUtils.toMap(configJson);
             return configMap.get("topic_arn");
         }
 
@@ -50,13 +50,13 @@ public class TaskLogic implements ITask
     {
         Gson gson = new Gson();
 
-        Map<String, Object> inputMap = Json.toMap(input);
+        Map<String, Object> inputMap = JsonUtils.toMap(input);
         Object messageInput = inputMap.get("input");
 
         if(messageInput != null)
         {
             String messageInputJson = gson.toJson(messageInput);
-            Map<String, Object> messageInputMap = Json.toMap(messageInputJson);
+            Map<String, Object> messageInputMap = JsonUtils.toMap(messageInputJson);
             return messageInputMap.get("full_cumulus_message");
         }
 

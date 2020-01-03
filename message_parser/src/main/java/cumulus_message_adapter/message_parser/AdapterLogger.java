@@ -46,7 +46,7 @@ public class AdapterLogger {
     private static String GetNestedObject(String json, Stack<String> keys) {
         Gson gson = new Gson();
 
-        Map<String, Object> map = Json.toMap(json);
+        Map<String, Object> map = JsonUtils.toMap(json);
 
         if (map != null && !keys.isEmpty()) {
             String key = keys.pop();

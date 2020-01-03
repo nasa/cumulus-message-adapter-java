@@ -27,14 +27,4 @@ public class Json {
     return new Gson().fromJson(jsonString, mapObjectType);
   }
 
-  /**
-   * Convert Map object to json string
-   *
-   * @param map The Map object
-   * @return The converted json string
-   */
-  public static String fromMap(Map<String, Object> map) {
-    return new Gson().toJson(map);
-  }
-
 }

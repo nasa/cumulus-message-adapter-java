@@ -9,12 +9,12 @@ import com.google.gson.reflect.TypeToken;
 /**
  * Utilities for converting JSON to string/map
  */
-public class JsonUtilities {
+public class Json {
 
   /**
    * Private no argument constructor for utility class
    */
-  private JsonUtilities() {}
+  private Json() {}
 
   /**
    * Convert json string to Map object
@@ -22,7 +22,7 @@ public class JsonUtilities {
    * @param jsonString The json string
    * @return The converted Map object
    */
-  public static Map<String, Object> convertJsonStringToMap(String jsonString) {
+  public static Map<String, Object> toMap(String jsonString) {
     Type mapObjectType = new TypeToken<Map<String, Object>>() {}.getType();
     return new Gson().fromJson(jsonString, mapObjectType);
   }
@@ -33,7 +33,7 @@ public class JsonUtilities {
    * @param map The Map object
    * @return The converted json string
    */
-  public static String convertMapToJsonString(Map<String, Object> map) {
+  public static String fromMap(Map<String, Object> map) {
     return new Gson().toJson(map);
   }
 

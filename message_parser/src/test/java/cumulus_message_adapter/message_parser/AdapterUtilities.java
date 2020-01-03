@@ -87,7 +87,7 @@ public class AdapterUtilities {
                 : CMA_GITHUB_PATH_URL;
 
         String jsonString = getJsonResponse(url);
-        Map<String, Object> map = JsonUtilities.convertJsonStringToMap(jsonString);
+        Map<String, Object> map = Json.toMap(jsonString);
         return (String) map.get("tag_name");
     }
 
@@ -211,7 +211,7 @@ public class AdapterUtilities {
     public static Map<String, Object> getExpectedTestTaskOutputJson() throws IOException
     {
         String expectedJsonString = loadResourceToString("basic.output.json");
-        Map<String, Object> expectedOutputJson = JsonUtilities.convertJsonStringToMap(expectedJsonString);
+        Map<String, Object> expectedOutputJson = Json.toMap(expectedJsonString);
         HashMap<String, String> taskMap = new HashMap<String, String>();
         taskMap.put("task", "complete");
         expectedOutputJson.put("payload", taskMap);

@@ -157,7 +157,7 @@ public class MessageAdapter implements IMessageAdapter
         gsonBuilder.serializeNulls();
         Gson gson = gsonBuilder.create();
 
-        Map<String, Object> nestedEventMap = JsonUtilities.convertJsonStringToMap(nestedEventJson);
+        Map<String, Object> nestedEventMap = Json.toMap(nestedEventJson);
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("event", gson.fromJson(remoteEventJson, Map.class));

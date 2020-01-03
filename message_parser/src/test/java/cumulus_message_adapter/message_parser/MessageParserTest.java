@@ -49,7 +49,7 @@ public class MessageParserTest {
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
 
-            Map<String, Object> taskOutputJson = JsonUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOutputJson = Json.toMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
@@ -72,7 +72,7 @@ public class MessageParserTest {
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false), "input.json",
                     "output.json", "config.json");
 
-            Map<String, Object> taskOutputJson = JsonUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOutputJson = Json.toMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
@@ -92,11 +92,11 @@ public class MessageParserTest {
             // the message is not changed
             String expectedJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
 
-            Map<String, Object> expectedOutputJson = JsonUtilities.convertJsonStringToMap(expectedJsonString);
+            Map<String, Object> expectedOutputJson = Json.toMap(expectedJsonString);
 
             String taskOutputString = messageAdapter.LoadAndUpdateRemoteEvent(inputJsonString, null, null);
 
-            Map<String, Object> taskOutputJson = JsonUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOutputJson = Json.toMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
@@ -139,7 +139,7 @@ public class MessageParserTest {
             String taskOutputString = messageAdapter.CreateNextEvent(inputJsonString, nestedEventJson, taskOutput,
                     null);
 
-            Map<String, Object> taskOuputJson = JsonUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOuputJson = Json.toMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
@@ -158,13 +158,13 @@ public class MessageParserTest {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
             String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
 
-            Map<String, Object> expectedOutputJson = JsonUtilities.convertJsonStringToMap(expectedJsonString);
+            Map<String, Object> expectedOutputJson = Json.toMap(expectedJsonString);
             expectedOutputJson.put("payload", null);
             expectedOutputJson.put("exception", "workflow exception");
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
 
-            Map<String, Object> taskOutputJson = JsonUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOutputJson = Json.toMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();

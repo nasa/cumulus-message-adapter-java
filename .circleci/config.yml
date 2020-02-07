@@ -7,8 +7,8 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-      
+      - image: cumuluss/openjdk:8-py3
+
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
@@ -19,7 +19,7 @@ jobs:
     environment:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
-    
+
     steps:
       - checkout
 
@@ -36,15 +36,15 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "message_parser/pom.xml" }}
-        
+
       # run tests!
       - run: mvn -f message_parser/pom.xml integration-test
-  
+
   deploy:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
-    
+      - image: cumuluss/openjdk:8-py3
+
     working_directory: ~/message_parser
 
     steps:

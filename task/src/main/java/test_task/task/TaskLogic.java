@@ -4,6 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 
 import cumulus_message_adapter.message_parser.AdapterLogger;
 import cumulus_message_adapter.message_parser.ITask;
+import cumulus_message_adapter.message_parser.JsonUtils;
 
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
@@ -18,7 +19,7 @@ public class TaskLogic implements ITask
 {
     /**
      * Get the SNS Topic Arn to publish to from the input JSON
-     * 
+     *
      * @param input - input JSON
      * @return Object containing the Topic Arn, null if not found
      */
@@ -26,13 +27,13 @@ public class TaskLogic implements ITask
     {
         Gson gson = new Gson();
 
-        Map inputMap = gson.fromJson(input, Map.class);
-
+        Map<String, Object> inputMap = JsonUtils.toMap(input);
         Object config = inputMap.get("config");
 
         if(config != null)
         {
-            Map configMap = gson.fromJson(gson.toJson(config), Map.class);
+            String configJson = gson.toJson(config);
+            Map<String, Object> configMap = JsonUtils.toMap(configJson);
             return configMap.get("topic_arn");
         }
 
@@ -41,7 +42,7 @@ public class TaskLogic implements ITask
 
     /**
      * Get the Cumulus message to publish to SNS from the input JSON
-     * 
+     *
      * @param input - input JSON
      * @return Object containing the Cumulus message, null if not found
      */
@@ -49,13 +50,13 @@ public class TaskLogic implements ITask
     {
         Gson gson = new Gson();
 
-        Map inputMap = gson.fromJson(input, Map.class);
+        Map<String, Object> inputMap = JsonUtils.toMap(input);
+        Object messageInput = inputMap.get("input");
 
-        Object inputJson = inputMap.get("input");
-
-        if(inputJson != null)
+        if(messageInput != null)
         {
-            Map messageInputMap = gson.fromJson(gson.toJson(inputJson), Map.class);
+            String messageInputJson = gson.toJson(messageInput);
+            Map<String, Object> messageInputMap = JsonUtils.toMap(messageInputJson);
             return messageInputMap.get("full_cumulus_message");
         }
 
@@ -63,9 +64,9 @@ public class TaskLogic implements ITask
     }
 
     /**
-     * Sample business logic. Log an info message. Publish a message to an SNS 
+     * Sample business logic. Log an info message. Publish a message to an SNS
      * topic configured by an environment variable if the variable is present.
-     * 
+     *
      * @param input - input string
      * @param context - AWS Lambda context
      * @return JSON string
@@ -74,40 +75,32 @@ public class TaskLogic implements ITask
     {
         AdapterLogger.LogInfo("Business logic input: " + input);
 
-        try
+        Object topicArn = GetTopicArn(input);
+
+        if(topicArn != null)
         {
-            Object topicArn = GetTopicArn(input);
+            AmazonSNS snsClient =  AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
-            if(topicArn != null)
+            Object cumulusMessage = GetCumulusMessage(input);
+            String message = "Test Message";
+
+            if(cumulusMessage != null)
             {
-                AmazonSNS snsClient =  AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
-
-                Object cumulusMessage = GetCumulusMessage(input);
-                String message = "Test Message";
-
-                if(cumulusMessage != null)
-                {
-                    message = cumulusMessage.toString();
-                }
-                else
-                {
-                    AdapterLogger.LogInfo("No cumulus message found in input, publishing test message to SNS.");
-                }
-
-                PublishRequest publishRequest = new PublishRequest(topicArn.toString(), message);
-                PublishResult publishResult = snsClient.publish(publishRequest);
-                AdapterLogger.LogInfo("Published message to SNS: " + publishResult.getMessageId());
+                message = cumulusMessage.toString();
             }
             else
             {
-                AdapterLogger.LogInfo("No topic arn found. Skipping publishing to SNS.");
+                AdapterLogger.LogInfo("No cumulus message found in input, publishing test message to SNS.");
             }
-        }
-        catch(Exception e)
-        {
-            AdapterLogger.LogError(e.getMessage());
-        }
 
+            PublishRequest publishRequest = new PublishRequest(topicArn.toString(), message);
+            PublishResult publishResult = snsClient.publish(publishRequest);
+            AdapterLogger.LogInfo("Published message to SNS: " + publishResult.getMessageId());
+        }
+        else
+        {
+            AdapterLogger.LogInfo("No topic arn found. Skipping publishing to SNS.");
+        }
 
         return "{\"status\":\"complete\"}";
     }

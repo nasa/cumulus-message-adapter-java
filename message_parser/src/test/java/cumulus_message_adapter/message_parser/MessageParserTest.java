@@ -16,6 +16,10 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.Map;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
  * Unit test for Message Parser test.
  */
@@ -41,12 +45,12 @@ public class MessageParserTest {
         MessageParser parser = new MessageParser(new MessageAdapter());
         try {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
-            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
+            Map<String, Object> expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false));
 
-            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
-            assertEquals(expectedOutputJson, taskOuputJson);
+            Map<String, Object> taskOutputJson = JsonUtils.toMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
             fail();
@@ -63,13 +67,13 @@ public class MessageParserTest {
 
         try {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
-            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
+            Map<String, Object> expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(false), "input.json",
                     "output.json", "config.json");
 
-            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
-            assertEquals(expectedOutputJson, taskOuputJson);
+            Map<String, Object> taskOutputJson = JsonUtils.toMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
             fail();
@@ -88,12 +92,12 @@ public class MessageParserTest {
             // the message is not changed
             String expectedJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
 
-            Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
+            Map<String, Object> expectedOutputJson = JsonUtils.toMap(expectedJsonString);
 
             String taskOutputString = messageAdapter.LoadAndUpdateRemoteEvent(inputJsonString, null, null);
 
-            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
-            assertEquals(expectedOutputJson, expectedOutputJson);
+            Map<String, Object> taskOutputJson = JsonUtils.toMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
             fail();
@@ -130,13 +134,12 @@ public class MessageParserTest {
         try {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
 
-            String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
-            Map expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
+            Map<String, Object> expectedOutputJson = AdapterUtilities.getExpectedTestTaskOutputJson();
 
             String taskOutputString = messageAdapter.CreateNextEvent(inputJsonString, nestedEventJson, taskOutput,
                     null);
 
-            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
+            Map<String, Object> taskOuputJson = JsonUtils.toMap(taskOutputString);
             assertEquals(expectedOutputJson, taskOuputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
@@ -145,87 +148,126 @@ public class MessageParserTest {
     }
 
     /**
-     * Test the response when there is an exception
+     * Test the response when there is a WorkflowException
      */
     @Test
-    public void testException() {
+    public void testWorkflowException() {
         MessageParser parser = new MessageParser(new MessageAdapter());
 
         try {
             String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
-
             String expectedJsonString = AdapterUtilities.loadResourceToString("basic.output.json");
-            Map expectedOutputJson = AdapterUtilities.convertJsonStringToMap(expectedJsonString);
+
+            Map<String, Object> expectedOutputJson = JsonUtils.toMap(expectedJsonString);
             expectedOutputJson.put("payload", null);
             expectedOutputJson.put("exception", "workflow exception");
 
             String taskOutputString = parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
 
-            Map taskOuputJson = AdapterUtilities.convertJsonStringToMap(taskOutputString);
-            assertEquals(expectedOutputJson, taskOuputJson);
+            Map<String, Object> taskOutputJson = JsonUtils.toMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOutputJson);
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
             fail();
         }
     }
 
+    /**
+     * Test that non-workflow exception is thrown
+     */
+    @Test
+    public void testNonWorkflowException() {
+        MessageParser parser = new MessageParser(new MessageAdapter());
+
+        try {
+            String inputJsonString = AdapterUtilities.loadResourceToString("basic.input.json");
+            parser.RunCumulusTask(inputJsonString, null, new TestExceptionTask());
+        } catch (MessageAdapterException | IOException e) {
+            assertTrue(e.getMessage().endsWith("java.lang.NullPointerException"));
+            assertEquals(e.getCause().getClass(), NullPointerException.class);
+        }
+    }
+
     @Test
     public void testLoggerWithCmaConfiguration() throws MessageAdapterException {
         String inputJsonFile = "parameter.input.json";
-        String expectedLog = "{\"executions\":\"someexecutionname\",\"level\":\"error\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "someexecutionname");
+        expectedObject.addProperty("level", "error");
+        testLogger(inputJsonFile, expectedObject);
     }
 
     @Test
     public void testLoggerWithContext() throws MessageAdapterException {
         String inputJsonFile = "context.input.json";
-        String expectedLog = "{\"executions\":\"16b2cb46ae879f09047dfa677\",\"level\":\"error\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "16b2cb46ae879f09047dfa677");
+        expectedObject.addProperty("level", "error");
+        testLogger(inputJsonFile, expectedObject);
     }
 
     @Test
     public void testLoggerWithGranulesInPayload() throws MessageAdapterException {
         String inputJsonFile = "execution.granule.input.json";
-        String expectedLog = "{\"executions\":\"execution_value\",\"level\":\"error\",\"granules\":\"[\\\"MOD09GQ.A2016358.h13v04.006.2016360104606\\\",\\\"MOD09GQ.A2016358.h13v04.007.2017\\\"]\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "execution_value");
+        expectedObject.addProperty("granules", "[\"MOD09GQ.A2016358.h13v04.006.2016360104606\",\"MOD09GQ.A2016358.h13v04.007.2017\"]");
+        expectedObject.addProperty("level", "error");
+        testLogger(inputJsonFile, expectedObject);
     }
 
     @Test
     public void testLoggerWithCmaGranulesInPayload() throws MessageAdapterException {
         String inputJsonFile = "parameterized.granule.input.json";
-        String expectedLog = "{\"executions\":\"execution_value\",\"level\":\"error\",\"granules\":\"[\\\"MOD09GQ.A2016358.h13v04.006.2016360104606\\\",\\\"MOD09GQ.A2016358.h13v04.007.2017\\\"]\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "execution_value");
+        expectedObject.addProperty("granules", "[\"MOD09GQ.A2016358.h13v04.006.2016360104606\",\"MOD09GQ.A2016358.h13v04.007.2017\"]");
+        expectedObject.addProperty("level", "error");
+        testLogger(inputJsonFile, expectedObject);
     }
 
     @Test
     public void testLoggerWithInputGranule() throws MessageAdapterException {
         String inputJsonFile = "execution.input_granule.input.json";
-        String expectedLog = "{\"executions\":\"execution_value\",\"level\":\"error\",\"granules\":\"[\\\"MOD09GQ.A2016358.h13v04.006.2016360104606\\\",\\\"MOD09GQ.A2016358.h13v04.007.2017\\\"]\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "execution_value");
+        expectedObject.addProperty("granules", "[\"MOD09GQ.A2016358.h13v04.006.2016360104606\",\"MOD09GQ.A2016358.h13v04.007.2017\"]");
+        expectedObject.addProperty("level", "error");
+        testLogger(inputJsonFile, expectedObject);
     }
 
     @Test
     public void testLoggerWithCmaInputGranule() throws MessageAdapterException {
         String inputJsonFile = "parameterized.input_granule.input.json";
-        String expectedLog = "{\"executions\":\"execution_value\",\"level\":\"error\",\"granules\":\"[\\\"MOD09GQ.A2016358.h13v04.006.2016360104606\\\",\\\"MOD09GQ.A2016358.h13v04.007.2017\\\"]\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "execution_value");
+        expectedObject.addProperty("granules", "[\"MOD09GQ.A2016358.h13v04.006.2016360104606\",\"MOD09GQ.A2016358.h13v04.007.2017\"]");
+        expectedObject.addProperty("level", "error");
+        testLogger(inputJsonFile, expectedObject);
     }
 
     @Test
     public void testLoggerWithExecution() throws MessageAdapterException {
         String inputJsonFile = "execution.input.json";
-        String expectedLog = "{\"executions\":\"execution_value\",\"level\":\"error\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "execution_value");
+        expectedObject.addProperty("level", "error");
+        testLogger(inputJsonFile, expectedObject);
     }
 
     @Test
     public void testLoggerWithCmaExecution() throws MessageAdapterException {
         String inputJsonFile = "parameterized.input.json";
-        String expectedLog = "{\"executions\":\"execution_value\",\"parentArn\":\"arn:aws:states:us-east-1:12345:execution:DiscoverGranules:8768aebb\",\"level\":\"error\",\"asyncOperationId\":\"async-id-123\",\"stackName\":\"cumulus-stack\",\"message\":\"workflow exception\",\"timestamp\"";
-        testLogger(inputJsonFile, expectedLog);
+        JsonObject expectedObject = new JsonObject();
+        expectedObject.addProperty("executions", "execution_value");
+        expectedObject.addProperty("parentArn", "arn:aws:states:us-east-1:12345:execution:DiscoverGranules:8768aebb");
+        expectedObject.addProperty("level", "error");
+        expectedObject.addProperty("asyncOperationId", "async-id-123");
+        expectedObject.addProperty("stackName", "cumulus-stack");
+        testLogger(inputJsonFile, expectedObject);
     }
 
-    private void testLogger(String inputJsonFile, String expectedLog) throws MessageAdapterException {
+    private void testLogger(String inputJsonFile, JsonObject expectedObject) throws MessageAdapterException {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
         TestAppender appender = (TestAppender) config.getAppenders().get("TestAppender");
@@ -236,8 +278,17 @@ public class MessageParserTest {
             String inputJsonString = AdapterUtilities.loadResourceToString(inputJsonFile);
             parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
 
-            // Test that the part of the message minus the actual timestamp is correct
-            assertEquals(expectedLog, appender.GetLogMessage(0).substring(0, expectedLog.length()));
+            String logMessage = appender.GetLogMessage(0);
+            JsonElement logElement = new JsonParser().parse(logMessage);
+            JsonObject logObject = logElement.getAsJsonObject();
+            String errorMessage = logObject.get("message").getAsString();
+
+            // Remove message for special comparison and timestamp since it is dynamically generated
+            logObject.remove("message");
+            logObject.remove("timestamp");
+
+            assertEquals(expectedObject, logObject);
+            assertTrue(errorMessage.startsWith("cumulus_message_adapter.message_parser.WorkflowException: workflow exception"));
         } catch (MessageAdapterException | IOException e) {
             e.printStackTrace();
             fail();

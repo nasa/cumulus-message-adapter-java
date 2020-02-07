@@ -40,7 +40,7 @@ public class MessageAdapter implements IMessageAdapter
 
         try
         {
-            ProcessBuilder processBuilder = new ProcessBuilder("python", messageAdapterPath, messageAdapterFunction);
+            ProcessBuilder processBuilder = new ProcessBuilder("python3", messageAdapterPath, messageAdapterFunction);
             Process process = processBuilder.start();
 
             OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());

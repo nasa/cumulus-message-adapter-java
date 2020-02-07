@@ -37,7 +37,7 @@ public class TestAppender extends AbstractAppender {
 
     @PluginFactory
     public static TestAppender createAppender(@PluginAttribute("name") String name,
-            @PluginElement("Layout") Layout<? extends Serializable> layout, 
+            @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
             @PluginAttribute("otherAttribute") String otherAttribute) {
         if (name == null) {

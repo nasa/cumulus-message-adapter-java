@@ -2,8 +2,6 @@ package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context;
 
-import cumulus_message_adapter.message_parser.WorkflowException; 
-
 public class TestTask implements ITask
 {
     private boolean _throwWorkflowException;

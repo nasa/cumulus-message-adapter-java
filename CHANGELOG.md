@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## [v1.3.0] - 2020-02-10
 
-### Breaking
+### BREAKING CHANGES
 
 - Updated external CMA call to utilize python3 in anticipation of updates to the CMA.
 

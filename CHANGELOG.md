@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [v1.3.1] - 2020-06-10
+
+### Fixed
+
+- **CUMULUS-2017** - fixed the `AdapterLogger` timestamp to be in ISO format
+
 ## [v1.3.0] - 2020-02-10
 
 ### BREAKING CHANGES

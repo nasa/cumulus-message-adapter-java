@@ -7,13 +7,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.time.Instant;
 
 /**
  * Utilities for logging adapter messages
@@ -92,7 +91,6 @@ public class AdapterLogger {
      */
     private static String GenerateMessage(String level, String message) {
         Gson gson = new Gson();
-        Date date = new Date();
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("asyncOperationId", _asyncOperationId);
@@ -104,7 +102,7 @@ public class AdapterLogger {
         map.put("version", _version);
         map.put("level", level);
         map.put("message", message);
-        map.put("timestamp", new Timestamp(date.getTime()).toString());
+        map.put("timestamp", Instant.now().toString());
 
         return gson.toJson(map);
     }

@@ -104,6 +104,29 @@ public class MessageParserTest {
         }
     }
 
+
+    @Test
+    public void testLoadAndUpdateRemoteEvent_BigInputDoesntHang() {
+        MessageAdapter messageAdapter = new MessageAdapter();
+
+        try {
+            String inputJsonString = AdapterUtilities.loadResourceToString("s6.input.json");
+            // the message is not changed
+            String expectedJsonString = AdapterUtilities.loadResourceToString("s6.input.json");
+
+            Map<String, Object> expectedOutputJson = JsonUtils.toMap(expectedJsonString);
+
+            String taskOutputString = messageAdapter.LoadAndUpdateRemoteEvent(inputJsonString, null, null);
+
+            Map<String, Object> taskOutputJson = JsonUtils.toMap(taskOutputString);
+            assertEquals(expectedOutputJson, taskOutputJson);
+
+        } catch (MessageAdapterException | IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     /**
      * Test that LoadNestedEvent converts input to JSON correctly
      */

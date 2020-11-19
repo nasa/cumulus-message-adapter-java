@@ -4,6 +4,9 @@ import com.amazonaws.services.lambda.runtime.Context;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.Map;
@@ -47,6 +50,15 @@ public class MessageAdapter implements IMessageAdapter
             writer.write(inputJson);
             writer.close();
 
+            //fix to avoid overflowing processBuilder InputStream
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            //If we ever return more than a single (even very large line) from cumulus_message_adapter this won't work.
+            while ((line = reader.readLine()) != null){
+              break;
+            }
+            reader.close();
             Boolean processComplete = false;
 
             try
@@ -67,12 +79,7 @@ public class MessageAdapter implements IMessageAdapter
 
             if(processComplete && exitValue == 0) // Success
             {
-                Scanner scanner = new Scanner(process.getInputStream());
-                if(scanner.hasNextLine())
-                {
-                    messageAdapterOutput = scanner.nextLine();
-                }
-                scanner.close();
+                messageAdapterOutput = line;
             }
             else // An error has occurred
             {

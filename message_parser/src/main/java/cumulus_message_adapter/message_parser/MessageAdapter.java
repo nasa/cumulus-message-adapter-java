@@ -59,7 +59,7 @@ public class MessageAdapter implements IMessageAdapter
             while ((line = reader.readLine()) != null){
               break;
             }
-
+            reader.close();
             Boolean processComplete = false;
 
             try

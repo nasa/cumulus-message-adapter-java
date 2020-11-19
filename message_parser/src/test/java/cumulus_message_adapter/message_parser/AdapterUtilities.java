@@ -150,11 +150,14 @@ public class AdapterUtilities {
      * @throws IOException
      */
     public static void downloadCMA(String path) throws IOException {
+        System.out.println("Downloading CMA");
+
         String version = (System.getenv(MESSAGE_ADAPTER_VERSION) != null) ? System.getenv(MESSAGE_ADAPTER_VERSION)
                 : fetchLatestMessageAdapterRelease();
         String url = CMA_DOWNLOAD_URL_PREFIX + version + File.separator + CMA_FILENAME;
         String currentDirectory = System.getProperty("user.dir");
         String zipFile = currentDirectory + File.separator + CMA_FILENAME;
+        System.out.println("Download file: " + zipFile);
         downloadFile(url, zipFile);
         System.out.println("unzip " + zipFile + " to " + currentDirectory + File.separator + path);
         unzipFile(zipFile, currentDirectory + File.separator + path);

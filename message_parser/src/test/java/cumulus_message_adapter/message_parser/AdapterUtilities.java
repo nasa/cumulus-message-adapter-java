@@ -150,8 +150,6 @@ public class AdapterUtilities {
      * @throws IOException
      */
     public static void downloadCMA(String path) throws IOException {
-        System.out.println("Downloading CMA");
-
         String version = (System.getenv(MESSAGE_ADAPTER_VERSION) != null) ? System.getenv(MESSAGE_ADAPTER_VERSION)
                 : fetchLatestMessageAdapterRelease();
         String url = CMA_DOWNLOAD_URL_PREFIX + version + File.separator + CMA_FILENAME;

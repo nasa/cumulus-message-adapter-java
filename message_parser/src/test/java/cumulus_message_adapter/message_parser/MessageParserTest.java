@@ -107,7 +107,7 @@ public class MessageParserTest {
     @Test
     public void testLoadAndUpdateRemoteEvent_s6Success() {
         MessageAdapter messageAdapter = new MessageAdapter();
-        System.out.println("Run non-Hanging Test");
+        //"Run non-Hanging Test"
         try {
             String inputJsonString = AdapterUtilities.loadResourceToString("s6.input.json");
             // the message is not changed
@@ -115,7 +115,6 @@ public class MessageParserTest {
 
             Map<String, Object> expectedOutputJson = JsonUtils.toMap(expectedJsonString);
 
-            System.out.println("Loading non-hanging...");
             String taskOutputString = messageAdapter.LoadNestedEvent(inputJsonString, null, null);
 
             Map<String, Object> taskOutputJson = JsonUtils.toMap(taskOutputString);
@@ -129,7 +128,7 @@ public class MessageParserTest {
     @Test
     public void testLoadAndUpdateRemoteEvent_s6Error() {
         MessageAdapter messageAdapter = new MessageAdapter();
-        System.out.println("Run Hanging Test");
+        //"Run Hanging Test";
         try {
             String inputJsonString = AdapterUtilities.loadResourceToString("s6.input.json");
             // the message is not changed
@@ -137,7 +136,7 @@ public class MessageParserTest {
 
             Map<String, Object> expectedOutputJson = JsonUtils.toMap(expectedJsonString);
 
-            System.out.println("Loading hanging...");
+            //where hanging happens...
             String taskOutputString = messageAdapter.LoadAndUpdateRemoteEvent(inputJsonString, null, null);
 
             Map<String, Object> taskOutputJson = JsonUtils.toMap(taskOutputString);

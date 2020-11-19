@@ -18,7 +18,6 @@ public class MessageAdapterEnvironmentTest
     {
         AdapterUtilities.deleteCMA("alternate-cumulus-message-adapter");
         AdapterUtilities.deleteCMA("cumulus-message-adapter");
-        System.out.println("Downlaoding CMA");
         AdapterUtilities.downloadCMA("alternate-cumulus-message-adapter");
     }
 

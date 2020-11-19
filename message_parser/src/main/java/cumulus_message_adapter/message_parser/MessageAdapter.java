@@ -50,9 +50,8 @@ public class MessageAdapter implements IMessageAdapter
             writer.write(inputJson);
             writer.close();
 
-            // Honestly i'm not sure why scanner doens't work below, i think the
-            // issue is taht this needs to be consumed before the process will
-            // exit (too large for processbuilder?)
+            //fix to avoid overflowing processBuilder InputStream
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             //If we ever return more than a single (even very large line) from cumulus_message_adapter this won't work.
@@ -80,7 +79,6 @@ public class MessageAdapter implements IMessageAdapter
 
             if(processComplete && exitValue == 0) // Success
             {
-
                 messageAdapterOutput = line;
             }
             else // An error has occurred

@@ -155,7 +155,6 @@ public class AdapterUtilities {
         String url = CMA_DOWNLOAD_URL_PREFIX + version + File.separator + CMA_FILENAME;
         String currentDirectory = System.getProperty("user.dir");
         String zipFile = currentDirectory + File.separator + CMA_FILENAME;
-        System.out.println("Download file: " + zipFile);
         downloadFile(url, zipFile);
         System.out.println("unzip " + zipFile + " to " + currentDirectory + File.separator + path);
         unzipFile(zipFile, currentDirectory + File.separator + path);

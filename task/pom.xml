@@ -27,11 +27,11 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-    <!-- <dependency>
+    <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-lambda-java-core</artifactId>
       <version>1.2.0</version>
-    </dependency> -->
+    </dependency>
     <dependency>
       <groupId>software.amazon.awssdk</groupId>
       <artifactId>sns</artifactId>
@@ -42,11 +42,11 @@
       <artifactId>regions</artifactId>
       <version>2.15.36</version>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-core</artifactId>
       <version>1.11.893</version>
-    </dependency>
+    </dependency> -->
     <!-- https://mvnrepository.com/artifact/gov.nasa.earthdata/cumulus-message-adapter -->
     <dependency>
       <groupId>gov.nasa.earthdata</groupId>

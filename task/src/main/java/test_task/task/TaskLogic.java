@@ -6,10 +6,10 @@ import cumulus_message_adapter.message_parser.AdapterLogger;
 import cumulus_message_adapter.message_parser.ITask;
 import cumulus_message_adapter.message_parser.JsonUtils;
 
-import com.amazonaws.services.sns.AmazonSNS;
-import com.amazonaws.services.sns.AmazonSNSClientBuilder;
-import com.amazonaws.services.sns.model.*;
-import com.amazonaws.regions.*;
+import software.amazon.awssdk.services.sns.SnsClient;
+import software.amazon.awssdk.services.sns.SnsClientBuilder;
+import software.amazon.awssdk.regions.*;
+import software.amazon.awssdk.services.sns.model.*;
 
 import com.google.gson.Gson;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class TaskLogic implements ITask
 
         if(topicArn != null)
         {
-            AmazonSNS snsClient =  AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+            SnsClient snsClient =  SnsClientBuilder.region(Region.US_EAST_1).build();
 
             Object cumulusMessage = GetCumulusMessage(input);
             String message = "Test Message";
@@ -93,8 +93,8 @@ public class TaskLogic implements ITask
                 AdapterLogger.LogInfo("No cumulus message found in input, publishing test message to SNS.");
             }
 
-            PublishRequest publishRequest = new PublishRequest(topicArn.toString(), message);
-            PublishResult publishResult = snsClient.publish(publishRequest);
+            PublishRequest publishRequest = PublishRequest.builder().message(message).topicArn(topicArn.toString()).build();
+            PublishResponse publishResult = snsClient.publish(publishRequest);
             AdapterLogger.LogInfo("Published message to SNS: " + publishResult.getMessageId());
         }
         else

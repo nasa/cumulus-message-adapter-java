@@ -28,12 +28,12 @@
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-sns</artifactId>
-      <version>1.11.903</version>
+      <version>1.12.1</version>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-core</artifactId>
-      <version>1.11.903</version>
+      <version>1.12.1</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/gov.nasa.earthdata/cumulus-message-adapter -->
     <dependency>

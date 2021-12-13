@@ -58,6 +58,10 @@ public class AdapterUtilities {
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("User-Agent", "@cumulus/deployment");
 
+        if (System.getenv("GITHUB_TOKEN") != null) {
+            conn.setRequestProperty("Authorization", "token " + System.getenv("GITHUB_TOKEN"));
+        }
+
         if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new RuntimeException("Request Failed. HTTP Error Code: " + conn.getResponseCode());
         }
@@ -82,11 +86,7 @@ public class AdapterUtilities {
      * @throws IOException
      */
     private static String fetchLatestMessageAdapterRelease() throws IOException {
-        String url = (System.getenv("GITHUB_TOKEN") != null)
-                ? CMA_GITHUB_PATH_URL + "?access_token=" + System.getenv("GITHUB_TOKEN")
-                : CMA_GITHUB_PATH_URL;
-
-        String jsonString = getJsonResponse(url);
+        String jsonString = getJsonResponse(CMA_GITHUB_PATH_URL);
         Map<String, Object> map = JsonUtils.toMap(jsonString);
         return (String) map.get("tag_name");
     }

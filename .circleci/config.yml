@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Publish release
           command: |
-            GITHUB_TOKEN=${GITHUB_TOKEN} sh bin/release.sh
+            GITHUB_TOKEN=${GITHUB_TOKEN} sh scripts/release.sh
 
   deploy:
     docker:

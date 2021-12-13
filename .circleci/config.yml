@@ -40,6 +40,11 @@ jobs:
       # run tests!
       - run: mvn -f message_parser/pom.xml integration-test
 
+      - run:
+          name: Publish release
+          command: |
+            GITHUB_TOKEN=${GITHUB_TOKEN} sh bin/release.sh
+
   deploy:
     docker:
       # specify the version you desire here

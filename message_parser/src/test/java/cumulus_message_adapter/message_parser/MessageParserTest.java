@@ -4,9 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 
-import cumulus_message_adapter.message_parser.MessageAdapterException;
-import cumulus_message_adapter.message_parser.MessageParser;
-
 import org.junit.Test;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;

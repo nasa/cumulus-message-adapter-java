@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [v1.3.3] - 2021-12-13
+
+### Fixed
+
+- Updated `aws-lambda-java-log4j2` to `1.3.0` and `org.apache.logging.log4j` to `2.15.0` to address [critical security vulnerability](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228)
+- Updated `com.google.code.gson` to `2.8.9` to address security vulnerabilities
+
 ## [v1.3.2] - 2020-11-19
 
 ### Fixed

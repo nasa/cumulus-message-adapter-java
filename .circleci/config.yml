@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -59,7 +59,7 @@ jobs:
       - run: mvn -s .circleci/.circleci.settings.xml -f message_parser/pom.xml deploy
 
 workflows:
-  version: 2
+  version: 2.1
   build_and_deploy:
     jobs:
       - build

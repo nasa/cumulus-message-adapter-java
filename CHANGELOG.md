@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [v1.3.4] - 2021-12-15
+
+### Fixed
+
+- Updated `org.apache.logging.log4j` to `2.16.0` to address [security vulnerability](https://github.com/advisories/GHSA-jfh8-c2jp-5v3q)
+
 ## [v1.3.3] - 2021-12-13
 
 ### Fixed

@@ -40,6 +40,11 @@ jobs:
       # run tests!
       - run: mvn -f message_parser/pom.xml integration-test
 
+      - run:
+          name: Publish release
+          command: |
+            GITHUB_TOKEN=${GITHUB_TOKEN} sh scripts/release.sh
+
   deploy:
     docker:
       # specify the version you desire here
@@ -52,11 +57,6 @@ jobs:
 
       # publish to clojars
       - run: mvn -s .circleci/.circleci.settings.xml -f message_parser/pom.xml deploy
-
-      - run:
-          name: Publish release
-          command: |
-            GITHUB_TOKEN=${GITHUB_TOKEN} sh scripts/release.sh
 
 workflows:
   version: 2

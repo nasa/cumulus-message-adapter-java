@@ -1,8 +1,6 @@
 {
-  "workflow_config": {
-    "Example": {
-      "bar": "baz"
-    }
+  "task_config": {
+    "bar": "baz"
   },
   "cumulus_meta": {
     "task": "Example",

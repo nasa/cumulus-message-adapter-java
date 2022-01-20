@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [v1.3.9] - 2022-01-20
+
+### Fixed
+
+- Updated `aws-lambda-java-log4j2` to `1.5.1` to address security vulnerability
+
 ## [v1.3.8] - 2022-01-12
 
 ### Fixed

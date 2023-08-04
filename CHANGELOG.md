@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 - **CUMULUS-3182**
   - Updated `AdapterLogger.InitializeLogger` method to be public
-  - Updated example Cumulus task to initialize logger, and build with Gradle 8
+  - Updated example Cumulus task to initialize logger, build with Gradle 8 and
+  updated com.amazonaws libraries
 
 ## [v1.3.9] - 2022-01-20
 

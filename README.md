@@ -75,7 +75,8 @@ For documenation on how to utilize this package in a Cumulus Deployment, please 
 
 ## Logging
 
-The message adapter library contains a logging class `AdapterLogger` that standardizes the log format for Cumulus. Static functions are provided to log error, fatal, warning, debug, info, and trace.
+The message adapter library contains a logging class `AdapterLogger` that standardizes the log format for Cumulus. Static functions are provided to log error, fatal, warning, debug, info, and trace. If AdapterLogger is used before calling 'RunCumulusTask', initialze it first. Please refer to the example
+[task](./task/src/main/java/test_task/task/Task.java).
 
 For example, to log an error, call:
 
@@ -88,6 +89,9 @@ AdapterLogger.LogError("Error message");
 ### Prerequisites
 
 * [Apache Maven](https://maven.apache.org/install.html)
+* [Gradle](https://gradle.org/install/)
+
+We currently build with JDK 1.8, Gradle 8.
 
 ### Building
 
@@ -105,7 +109,7 @@ These instructions assume that your task is using Maven for dependency managemen
 1. Get the current version number of the CMA Java client library from [`message_parser/pom.xml`](./message_parser/pom.xml):
 
     ```xml
-    <version>1.2.12</version>
+    <version>1.3.10</version>
     ```
 
 2. Make sure the `pom.xml` for your task includes a `dependency` referencing the correct version:
@@ -114,7 +118,7 @@ These instructions assume that your task is using Maven for dependency managemen
     <dependency>
       <groupId>gov.nasa.earthdata</groupId>
       <artifactId>cumulus-message-adapter</artifactId>
-      <version>1.2.12</version>
+      <version>1.3.10</version>
     </dependency>
     ```
 
@@ -122,13 +126,14 @@ These instructions assume that your task is using Maven for dependency managemen
 
     ```shell
     mvn install:install-file \
-      -Dfile=/path/to/cumulus-message-adapter-java/message_parser/target/cumulus-message-adapter-1.2.12.jar \
+      -Dfile=/path/to/cumulus-message-adapter-java/message_parser/target/cumulus-message-adapter-1.3.10.jar \
       -DgroupId=gov.nasa.earthdata \
       -DartifactId=cumulus-message-adapter \
-      -Dversion=1.2.12 \
+      -Dversion=1.3.10 \
       -Dpackaging=jar \
       -DgeneratePom=true
     mvn clean dependency:copy-dependencies
+    gradle build
     ```
 
 Running your task code (locally or when packaged and deployed) should now use the locally built CMA Java client package.

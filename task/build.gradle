@@ -1,19 +1,24 @@
 apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile fileTree(dir: 'target/lib', include: ['*.jar'])
+    implementation fileTree(dir: 'target/dependency', include: '*.jar')
+    implementation files("${System.properties['java.home']}/../lib/tools.jar")
 }
+
 
 task buildZip(type: Zip) {
     from compileJava
     from processResources              
     into('lib') {
-        from configurations.runtime
-    }           
+        from configurations.runtimeClasspath
+    }
+    archiveFileName = 'testTask.zip'
 }
 
 build.dependsOn buildZip

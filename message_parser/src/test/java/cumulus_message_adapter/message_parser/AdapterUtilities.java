@@ -59,7 +59,7 @@ public class AdapterUtilities {
         conn.setRequestProperty("User-Agent", "@cumulus/deployment");
 
         if (System.getenv("GITHUB_TOKEN") != null) {
-            conn.setRequestProperty("Authorization", "token " + System.getenv("GITHUB_TOKEN"));
+            conn.setRequestProperty("Authorization", "Bearer " + System.getenv("GITHUB_TOKEN"));
         }
 
         if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {

@@ -91,8 +91,6 @@ AdapterLogger.LogError("Error message");
 * [Apache Maven](https://maven.apache.org/install.html)
 * [Gradle](https://gradle.org/install/)
 
-We currently build with JDK 1.8, Gradle 8.
-
 ### Building
 
 To build a new version of the CMA Java client library:

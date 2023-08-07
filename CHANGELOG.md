@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 This version of the CMA java client works with cumulus-message-adapter
 [v2.0.2](https://github.com/nasa/cumulus-message-adapter/releases/tag/v2.0.2) or earlier,
-and it's built with JDK 1.8 and Gradle 8.
+and it's built with JDK 1.8.
 
 ### Changed
 

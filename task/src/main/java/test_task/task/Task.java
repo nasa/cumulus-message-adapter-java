@@ -33,7 +33,7 @@ public class Task implements RequestHandler<String, String>
 
         try
         {
-            // If AdapterLogger is used before calling 'RunCumulusTask', initialze it first
+            // If AdapterLogger is used before calling 'RunCumulusTask', initialize it first
             AdapterLogger.InitializeLogger(context, input);
             AdapterLogger.LogDebug(this.className + " handleRequest Input: " + input);
             return parser.RunCumulusTask(input, context, new TaskLogic());
@@ -49,7 +49,7 @@ public class Task implements RequestHandler<String, String>
         MessageParser parser = new MessageParser();
 
         String input = IOUtils.toString(inputStream, "UTF-8");
-        // If AdapterLogger is used before calling 'RunCumulusTask', initialze it first
+        // If AdapterLogger is used before calling 'RunCumulusTask', initialize it first
         AdapterLogger.InitializeLogger(context, input);
         AdapterLogger.LogDebug(this.className + " Input: " + input);
         String output = parser.RunCumulusTask(input, context, new TaskLogic());

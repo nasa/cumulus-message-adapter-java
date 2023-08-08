@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## [v1.3.10] - 2023-08-07
+
+### Note
+
+This version of the CMA java client works with cumulus-message-adapter
+[v2.0.2](https://github.com/nasa/cumulus-message-adapter/releases/tag/v2.0.2) or earlier,
+and it's built with JDK 1.8.
+
+### Changed
+
+- **CUMULUS-3182**
+  - Updated `AdapterLogger.InitializeLogger` method to be public
+  - Updated example Cumulus task to initialize logger, build with Gradle 8
+  - Updated com.amazonaws libraries to address security vulnerability
+
 ## [v1.3.9] - 2022-01-20
 
 ### Fixed

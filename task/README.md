@@ -6,7 +6,7 @@ The business logic for the task is in `TaskLogic.java`. If an SNS topic arn is p
 
 ## Lambda Configuration
 
-The handler should be set to `test_task.task.Task::handleRequest`.
+The handler should be set to `test_task.task.Task::handleRequest` or `test_task.task.Task::handleRequestStreams`.
 
 ## SNS Configuration
 

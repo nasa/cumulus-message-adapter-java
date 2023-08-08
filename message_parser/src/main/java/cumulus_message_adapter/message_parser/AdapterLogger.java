@@ -217,7 +217,7 @@ public class AdapterLogger {
      * @param context - AWS Lambda context
      * @param event   - the original event passed into Lambda
      */
-    static void InitializeLogger(Context context, String event) {
+    public static void InitializeLogger(Context context, String event) {
         // Initialize log parameters from event
         SetAsyncOperationId(event);
         SetExecutions(event);

@@ -1,25 +1,20 @@
 package cumulus_message_adapter.message_parser;
 
-import java.io.InputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utilities for downloading and cleaning up Cumulus Message Adapter package
@@ -85,27 +80,6 @@ public class AdapterUtilities {
     }
 
     /**
-     * create a new file for a given zip entry
-     *
-     * @param destinationDir The destination directory
-     * @param zipEntry       The zip entry
-     * @return
-     * @throws IOException
-     */
-    private static File createNewFileFromZipEntry(File destinationDir, ZipEntry zipEntry) throws IOException {
-        File destFile = new File(destinationDir, zipEntry.getName());
-
-        String destDirPath = destinationDir.getCanonicalPath();
-        String destFilePath = destFile.getCanonicalPath();
-
-        if (!destFilePath.startsWith(destDirPath + File.separator)) {
-            throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-        }
-
-        return destFile;
-    }
-
-    /**
      * unzip a zip file to destination
      *
      * @param fileZip The name and path of the zip file
@@ -113,28 +87,27 @@ public class AdapterUtilities {
      * @throws IOException
      */
     private static void unzipFile(String fileZip, String dest) throws IOException {
-        final byte[] buffer = new byte[1024];
-        final ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-        ZipEntry zipEntry = zis.getNextEntry();
-        FileSystem fileSystem = FileSystems.getDefault();
-        Files.createDirectory(fileSystem.getPath(dest));
+        ProcessBuilder processBuilder = new ProcessBuilder("unzip", fileZip, "-d", dest);
+        String command = processBuilder.command().toString();
 
-        while (zipEntry != null) {
-            if (zipEntry.isDirectory())
-                Files.createDirectories(fileSystem.getPath(dest + File.separator + zipEntry.getName()));
-            else {
-                final File newFile = createNewFileFromZipEntry(new File(dest), zipEntry);
-                final FileOutputStream fos = new FileOutputStream(newFile);
-                int len;
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.close();
+        try {
+            Process process = processBuilder.start();
+            final InputStream stdoutInputStream = process.getInputStream();
+            final BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(stdoutInputStream));
+            while (stdoutReader.readLine() != null) {
             }
-            zipEntry = zis.getNextEntry();
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                String errorString = String.format("Error executing command: %s, exit code: %s", command, exitCode);
+                System.out.println(errorString);
+                throw new IOException(errorString);
+            }
+        } catch (InterruptedException e) {
+            String errorString = String.format("Error executing command: %s, error: %s", command, e.getMessage());
+            System.out.println(errorString);
+            throw new IOException(errorString);
         }
-        zis.closeEntry();
-        zis.close();
     }
 
     /**

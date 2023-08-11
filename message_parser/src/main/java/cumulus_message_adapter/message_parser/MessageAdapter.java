@@ -2,15 +2,21 @@ package cumulus_message_adapter.message_parser;
 
 import com.amazonaws.services.lambda.runtime.Context;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +30,26 @@ public class MessageAdapter implements IMessageAdapter
         return System.getenv("CUMULUS_MESSAGE_ADAPTER_DIR");
     }
 
+    private ProcessBuilder buildProcess(String command)
+    {
+        String messageAdapterPath = "cumulus-message-adapter";
+        String messageAdapterDir = GetMessageAdapterEnvironmentVariable();
+        if(messageAdapterDir != null) {
+            messageAdapterPath = messageAdapterDir;
+        }
+        String systemPython = "python3";
+        boolean pythonExistsInPath = Stream.of(System.getenv("PATH").split(Pattern.quote(File.pathSeparator)))
+                .map(Paths::get)
+                .anyMatch(path -> Files.exists(path.resolve(systemPython)));
+        // TODO figure out how to set USE_CMA_BINARY env in test
+        pythonExistsInPath = false;
+        if (pythonExistsInPath && System.getenv("USE_CMA_BINARY") != "true") {
+          return new ProcessBuilder(systemPython, messageAdapterPath, command);
+        }
+        // If there is no system python, attempt use of pre-packaged CMA binary
+        return new ProcessBuilder(messageAdapterPath + "/cma_bin/cma", command);
+      }
+
     /**
      * Call to message adapter zip to execute a message adapter function. Pass args through the process input
      * and read return result from process output.
@@ -35,15 +61,10 @@ public class MessageAdapter implements IMessageAdapter
         throws MessageAdapterException
     {
         String messageAdapterOutput = "";
-        String messageAdapterPath = "cumulus-message-adapter";
-        String messageAdapterDir = GetMessageAdapterEnvironmentVariable();
-        if(messageAdapterDir != null) {
-            messageAdapterPath = messageAdapterDir;
-        }
 
         try
         {
-            ProcessBuilder processBuilder = new ProcessBuilder("python3", messageAdapterPath, messageAdapterFunction);
+            ProcessBuilder processBuilder = buildProcess(messageAdapterFunction);
             Process process = processBuilder.start();
 
             OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
@@ -56,7 +77,8 @@ public class MessageAdapter implements IMessageAdapter
             String line;
             //If we ever return more than a single (even very large line) from cumulus_message_adapter this won't work.
             while ((line = reader.readLine()) != null){
-              break;
+                AdapterLogger.LogDebug(line);
+                break;
             }
             reader.close();
             Boolean processComplete = false;
@@ -91,14 +113,15 @@ public class MessageAdapter implements IMessageAdapter
                 }
                 scanner.close();
 
-                AdapterLogger.LogError(String.format("Cumulus Message Adapter error: %s: %s", messageAdapterFunction, errorMessageBuilder.toString()));
+                String errorString = String.format("%s: %s", messageAdapterFunction, errorMessageBuilder.toString());
+                AdapterLogger.LogError("Cumulus Message Adapter error: " + errorString);
 
-                throw new MessageAdapterException("Error executing " + messageAdapterFunction);
+                throw new MessageAdapterException("Error executing " + errorString);
             }
         }
         catch(IOException e)
         {
-            AdapterLogger.LogError("Unable to find Cumulus Message Adapter");
+            AdapterLogger.LogError("Unable to find Cumulus Message Adapter: " + e.getMessage());
             throw new MessageAdapterException("Unable to find Cumulus Message Adapter", e.getCause());
         }
 

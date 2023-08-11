@@ -7,7 +7,7 @@ export VERSION_TAG="v$VERSION_NUMBER"
 
 LATEST_TAG=$(curl -H \
   "Authorization: token $GITHUB_TOKEN" \
-  https://api.github.com/repos/nasa/cumulus-message-adapter-java/tags | jq --raw-output '.[0].name')
+  https://api.github.com/repos/nasa/cumulus-message-adapter-java/tags | jq --raw-output '[.[]|.name]|.[0]')
 export LATEST_TAG
 
 if [ "$VERSION_TAG" != "$LATEST_TAG" ]; then

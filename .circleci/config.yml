@@ -3,49 +3,81 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
-jobs:
-  build:
+references:
+  container_jdk8: &container_jdk8
     docker:
-      # specify the version you desire here
       - image: cumuluss/openjdk:8-py37
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
+    working_directory: ~/message_parser
+  
+  container_jdk11: &container_jdk11
+    docker:
+      - image: cimg/openjdk:11.0.10
     working_directory: ~/message_parser
 
+  # Download and cache dependencies
+  restore_cache_jdk8: &restore_cache_jdk8
+    restore_cache:
+      keys:
+        - jdk8-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+        # fallback to using the latest cache if no exact match is found
+        - jdk8-dependencies-
+  
+  restore_cache_jdk11: &restore_cache_jdk11
+    restore_cache:
+      keys:
+        - jdk11-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+        # fallback to using the latest cache if no exact match is found
+        - jdk11-dependencies-
+
+  save_cache_jdk8: &save_cache_jdk8
+    save_cache:
+      paths:
+        - ~/jdk8
+      key: jdk8-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+  
+  save_cache_jdk11: &save_cache_jdk11
+    save_cache:
+      paths:
+        - ~/jdk11
+      key: jdk11-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+
+jobs:
+  build_jdk8:
+    <<: *container_jdk8
     environment:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
 
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "message_parser/pom.xml" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+      - *restore_cache_jdk8
 
       - run: mvn -f message_parser/pom.xml dependency:go-offline
 
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "message_parser/pom.xml" }}
+      - *save_cache_jdk8
+
+      # run tests!
+      - run: mvn -f message_parser/pom.xml integration-test
+  
+  build_jdk11:
+    <<: *container_jdk11
+    environment:
+      # Customize the JVM maximum heap limit
+      MAVEN_OPTS: -Xmx3200m
+
+    steps:
+      - checkout
+      - *restore_cache_jdk11
+
+      - run: mvn -f message_parser/pom.xml dependency:go-offline
+
+      - *save_cache_jdk11
 
       # run tests!
       - run: mvn -f message_parser/pom.xml integration-test
 
   deploy:
-    docker:
-      # specify the version you desire here
-      - image: cumuluss/openjdk:8-py37
-
-    working_directory: ~/message_parser
+    <<: *container_jdk8
 
     steps:
       - checkout
@@ -62,14 +94,17 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build:
+      - build_jdk8:
           context:
             - cumulus-packages
       - deploy:
           requires:
-            - build
+            - build_jdk8
           filters:
             branches:
               only: master
           context:
             - cumulus-packages
+  build_test_jdk11:
+    jobs:
+      - build_jdk11

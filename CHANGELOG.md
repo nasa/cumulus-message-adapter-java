@@ -18,6 +18,7 @@ and it's built with JDK 1.8.
   - Updated CMA client to utilize pre-packaged AWS LINUX 2 binary for CMA when system python is unavailable or
   USE_CMA_BINARY environment is set to true. This is a breaking change if your task environment does not have
   python in the system path, but generally should be backward compatible with most use cases.
+  - Updated ci configuration to test the package in both jdk8(with py37) and jdk11(no python) environments
 
 ## [v1.3.10] - 2023-08-07
 

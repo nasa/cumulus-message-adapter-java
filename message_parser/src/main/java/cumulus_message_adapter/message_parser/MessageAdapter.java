@@ -41,12 +41,11 @@ public class MessageAdapter implements IMessageAdapter
         boolean pythonExistsInPath = Stream.of(System.getenv("PATH").split(Pattern.quote(File.pathSeparator)))
                 .map(Paths::get)
                 .anyMatch(path -> Files.exists(path.resolve(systemPython)));
-        // TODO figure out how to set USE_CMA_BINARY env in test
-        pythonExistsInPath = false;
+
         if (pythonExistsInPath && System.getenv("USE_CMA_BINARY") != "true") {
           return new ProcessBuilder(systemPython, messageAdapterPath, command);
         }
-        // If there is no system python, attempt use of pre-packaged CMA binary
+        // If there is no system python or USE_CMA_BINARY is true, attempt use of pre-packaged CMA binary
         return new ProcessBuilder(messageAdapterPath + "/cma_bin/cma", command);
       }
 

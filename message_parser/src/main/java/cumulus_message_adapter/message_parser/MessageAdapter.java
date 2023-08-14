@@ -32,7 +32,7 @@ public class MessageAdapter implements IMessageAdapter
 
     private ProcessBuilder buildProcess(String command)
     {
-        String messageAdapterPath = "cumulus-message-adapter";
+        String messageAdapterPath = System.getProperty("user.dir") + File.separator + "cumulus-message-adapter";
         String messageAdapterDir = GetMessageAdapterEnvironmentVariable();
         if(messageAdapterDir != null) {
             messageAdapterPath = messageAdapterDir;
@@ -60,10 +60,12 @@ public class MessageAdapter implements IMessageAdapter
         throws MessageAdapterException
     {
         String messageAdapterOutput = "";
+        String command = "";
 
         try
         {
             ProcessBuilder processBuilder = buildProcess(messageAdapterFunction);
+            command = processBuilder.command().toString();
             Process process = processBuilder.start();
 
             OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
@@ -120,8 +122,9 @@ public class MessageAdapter implements IMessageAdapter
         }
         catch(IOException e)
         {
-            AdapterLogger.LogError("Unable to find Cumulus Message Adapter: " + e.getMessage());
-            throw new MessageAdapterException("Unable to find Cumulus Message Adapter", e.getCause());
+            String errorString = String.format("Unable to find Cumulus Message Adapter: %s: %s", command, e.getMessage());
+            AdapterLogger.LogError(errorString);
+            throw new MessageAdapterException(errorString);
         }
 
         return messageAdapterOutput;

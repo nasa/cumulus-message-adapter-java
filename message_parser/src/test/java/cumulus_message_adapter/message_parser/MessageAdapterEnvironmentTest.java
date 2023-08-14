@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -19,12 +20,14 @@ public class MessageAdapterEnvironmentTest
     {
         AdapterUtilities.deleteCMA("alternate-cumulus-message-adapter");
         AdapterUtilities.deleteCMA("cumulus-message-adapter");
+        AdapterUtilities.downloadCMA("cumulus-message-adapter");
         AdapterUtilities.downloadCMA("alternate-cumulus-message-adapter");
     }
 
     @AfterClass
     public static void teardown() throws IOException
     {
+        AdapterUtilities.deleteCMA("cumulus-message-adapter");
         AdapterUtilities.deleteCMA("alternate-cumulus-message-adapter");
     }
 
@@ -57,7 +60,9 @@ public class MessageAdapterEnvironmentTest
      */
     @Test
     public void testMessageAdapterAlternate() throws Exception {
-        withEnvironmentVariable("CUMULUS_MESSAGE_ADAPTER_DIR", "alternate-cumulus-message-adapter")
+        String currentDirectory = System.getProperty("user.dir");
+        String alternativeDirectory = currentDirectory + File.separator + "alternate-cumulus-message-adapter";
+        withEnvironmentVariable("CUMULUS_MESSAGE_ADAPTER_DIR", alternativeDirectory)
                 .execute(() -> testAndVerifyMessageParser());
     }
 
@@ -67,6 +72,18 @@ public class MessageAdapterEnvironmentTest
     @Test
     public void testPackagedCma() throws Exception {
         withEnvironmentVariable("USE_CMA_BINARY", "true")
+                .execute(() -> testAndVerifyMessageParser());
+    }
+
+    /*
+     * Test message handler works correctly when an alternate CMA path is specified and packaged CMA is executed
+     */
+    @Test
+    public void testAlternativeCmaPathAndPackagedCma() throws Exception {
+        String currentDirectory = System.getProperty("user.dir");
+        String alternativeDirectory = currentDirectory + File.separator + "alternate-cumulus-message-adapter";
+        withEnvironmentVariable("CUMULUS_MESSAGE_ADAPTER_DIR", alternativeDirectory)
+                .and("USE_CMA_BINARY", "true")
                 .execute(() -> testAndVerifyMessageParser());
     }
 }

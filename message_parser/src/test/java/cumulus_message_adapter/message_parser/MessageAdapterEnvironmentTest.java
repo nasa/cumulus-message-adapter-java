@@ -56,7 +56,7 @@ public class MessageAdapterEnvironmentTest
      * Test message handler works correctly when an alternate path is specified
      */
     @Test
-    public void testMessageAdapterAlternate() {
+    public void testMessageAdapterAlternate() throws Exception {
         withEnvironmentVariable("CUMULUS_MESSAGE_ADAPTER_DIR", "alternate-cumulus-message-adapter")
                 .execute(() -> testAndVerifyMessageParser());
     }

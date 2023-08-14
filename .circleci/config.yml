@@ -18,14 +18,14 @@ references:
   restore_cache_jdk8: &restore_cache_jdk8
     restore_cache:
       keys:
-        - jdk8-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+        - jdk8-dependencies-{{ checksum "message_parser/pom.xml" }}
         # fallback to using the latest cache if no exact match is found
         - jdk8-dependencies-
   
   restore_cache_jdk11: &restore_cache_jdk11
     restore_cache:
       keys:
-        - jdk11-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+        - jdk11-dependencies-{{ checksum "message_parser/pom.xml" }}
         # fallback to using the latest cache if no exact match is found
         - jdk11-dependencies-
 
@@ -33,13 +33,13 @@ references:
     save_cache:
       paths:
         - ~/jdk8
-      key: jdk8-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+      key: jdk8-dependencies-{{ checksum "message_parser/pom.xml" }}
   
   save_cache_jdk11: &save_cache_jdk11
     save_cache:
       paths:
         - ~/jdk11
-      key: jdk11-dependencies-{{ checksum "requirements.txt" }}-{{ checksum "requirements-dev.txt" }}
+      key: jdk11-dependencies-{{ checksum "message_parser/pom.xml" }}
 
 jobs:
   build_jdk8:

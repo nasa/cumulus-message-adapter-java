@@ -11,7 +11,7 @@ references:
   
   container_jdk11: &container_jdk11
     docker:
-      - image: cimg/openjdk:11.0.10
+      - image: cimg/openjdk:11.0.20
     working_directory: ~/message_parser
 
   # Download and cache dependencies

@@ -24,6 +24,7 @@ import com.google.gson.GsonBuilder;
 public class MessageAdapter implements IMessageAdapter
 {
     private static final int MESSAGE_ADAPTER_TIMEOUT = 60 * 5; // seconds
+    private static final String systemPython = "python3";
 
     public String GetMessageAdapterEnvironmentVariable()
     {
@@ -37,7 +38,7 @@ public class MessageAdapter implements IMessageAdapter
         if(messageAdapterDir != null) {
             messageAdapterPath = messageAdapterDir;
         }
-        String systemPython = "python3";
+
         boolean pythonExistsInPath = Stream.of(System.getenv("PATH").split(Pattern.quote(File.pathSeparator)))
                 .map(Paths::get)
                 .anyMatch(path -> Files.exists(path.resolve(systemPython)));

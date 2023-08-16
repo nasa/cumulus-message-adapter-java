@@ -59,7 +59,7 @@ jobs:
       # run tests!
       - run: mvn -f message_parser/pom.xml integration-test
   
-  build_jdk8:
+  build:
     <<: *container_jdk8
     environment:
       # Customize the JVM maximum heap limit
@@ -107,4 +107,4 @@ workflows:
             - cumulus-packages
   build_test_jdk8:
     jobs:
-      - build_jdk8
+      - build

@@ -12,7 +12,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 This version of the CMA java client works with cumulus-message-adapter
 [v2.0.2](https://github.com/nasa/cumulus-message-adapter/releases/tag/v2.0.2) or later,
-and it's built with JDK 1.8.  The package works on AWS Runtime Java 8 environment, for both Amazon Linux 1 and 2.
+and it's built with JDK 1.8.  When use the java client package in AWS Runtime environment,
+for Java 8 Amazon Linux 1, use cumulus-message-adapter v2.0.2,
+and for Java 8 Amazon Linux 2, use cumulus-message-adapter v2.0.3 or later.
 
 ### Changed
 

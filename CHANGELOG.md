@@ -4,9 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
+## Unreleased
+
+## [v1.4.0] - 2023-08-17
+
+### Notable Changes
+
+This version of the CMA java client works with cumulus-message-adapter
+[v2.0.2](https://github.com/nasa/cumulus-message-adapter/releases/tag/v2.0.2) or later,
+and it's built with JDK 1.8.  When use the java client package in AWS Runtime environment,
+for Java 8 Amazon Linux 1, use cumulus-message-adapter v2.0.2,
+and for Java 8 Amazon Linux 2, use cumulus-message-adapter v2.0.3 or later.
+
+### Changed
+
+- **CUMULUS-3386**
+  - Updated CMA client to utilize pre-packaged AWS LINUX 2 binary for CMA when system python is unavailable or
+  USE_CMA_BINARY environment is set to true. This is a breaking change if your task environment does not have
+  python in the system path, but generally should be backward compatible with most use cases.
+  - Updated ci configuration to test the package on jdk8 environment both with and without system python
+
 ## [v1.3.10] - 2023-08-07
 
-### Note
+### Notable Changes
 
 This version of the CMA java client works with cumulus-message-adapter
 [v2.0.2](https://github.com/nasa/cumulus-message-adapter/releases/tag/v2.0.2) or earlier,

@@ -90,8 +90,7 @@ public class MessageParser implements IMessageParser
             if(e.getClass().getSimpleName().contains("WorkflowError") ||
                e.getClass().getSimpleName().contains("WorkflowException"))
             {
-                JsonElement jelement = new JsonParser().parse(input);
-                JsonObject inputObject = jelement.getAsJsonObject();
+                JsonObject inputObject = JsonParser.parseString(input).getAsJsonObject();
                 inputObject.add("payload", null);
                 inputObject.addProperty("exception", e.getMessage());
                 return inputObject.toString();

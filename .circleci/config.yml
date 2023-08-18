@@ -43,7 +43,6 @@ jobs:
 
   deploy:
     <<: *container_jdk11
-
     steps:
       - checkout
 

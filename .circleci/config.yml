@@ -4,80 +4,45 @@
 #
 version: 2
 references:
-  container_jdk8py37: &container_jdk8py37
+  container_jdk11: &container_jdk11
     docker:
-      - image: cumuluss/openjdk:8-py37
-    working_directory: ~/message_parser
-  
-  container_jdk8: &container_jdk8
-    docker:
-      - image: cimg/openjdk:8.0.362
+      - image: cimg/openjdk:11.0.20
     working_directory: ~/message_parser
 
   # Download and cache dependencies
-  restore_cache_jdk8py37: &restore_cache_jdk8py37
+  restore_cache_jdk11: &restore_cache_jdk11
     restore_cache:
       keys:
-        - jdk8py37-dependencies-{{ checksum "message_parser/pom.xml" }}
+        - jdk11-dependencies-{{ checksum "message_parser/pom.xml" }}
         # fallback to using the latest cache if no exact match is found
-        - jdk8py37-dependencies-
-  
-  restore_cache_jdk8: &restore_cache_jdk8
-    restore_cache:
-      keys:
-        - jdk8-dependencies-{{ checksum "message_parser/pom.xml" }}
-        # fallback to using the latest cache if no exact match is found
-        - jdk8-dependencies-
+        - jdk11-dependencies-
 
-  save_cache_jdk8py37: &save_cache_jdk8py37
+  save_cache_jdk11: &save_cache_jdk11
     save_cache:
       paths:
-        - ~/jdk8py37
-      key: jdk8py37-dependencies-{{ checksum "message_parser/pom.xml" }}
-  
-  save_cache_jdk8: &save_cache_jdk8
-    save_cache:
-      paths:
-        - ~/jdk8
-      key: jdk8-dependencies-{{ checksum "message_parser/pom.xml" }}
+        - ~/jdk11
+      key: jdk11-dependencies-{{ checksum "message_parser/pom.xml" }}
 
 jobs:
-  build_jdk8py37:
-    <<: *container_jdk8py37
-    environment:
-      # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
-
-    steps:
-      - checkout
-      - *restore_cache_jdk8py37
-
-      - run: mvn -f message_parser/pom.xml dependency:go-offline
-
-      - *save_cache_jdk8py37
-
-      # run tests!
-      - run: mvn -f message_parser/pom.xml integration-test
-  
   build:
-    <<: *container_jdk8
+    <<: *container_jdk11
     environment:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
 
     steps:
       - checkout
-      - *restore_cache_jdk8
+      - *restore_cache_jdk11
 
       - run: mvn -f message_parser/pom.xml dependency:go-offline
 
-      - *save_cache_jdk8
+      - *save_cache_jdk11
 
       # run tests!
       - run: mvn -f message_parser/pom.xml integration-test
 
   deploy:
-    <<: *container_jdk8py37
+    <<: *container_jdk11
 
     steps:
       - checkout
@@ -94,17 +59,14 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build_jdk8py37:
+      - build:
           context:
             - cumulus-packages
       - deploy:
           requires:
-            - build_jdk8py37
+            - build
           filters:
             branches:
               only: master
           context:
             - cumulus-packages
-  build_test_jdk8:
-    jobs:
-      - build

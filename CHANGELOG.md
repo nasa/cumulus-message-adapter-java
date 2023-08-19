@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 
 ## Unreleased
 
+## [v2.0.0] - 2023-08-21
+
+### Notable Changes
+
+This version of the CMA java client works with cumulus-message-adapter
+[v2.0.2](https://github.com/nasa/cumulus-message-adapter/releases/tag/v2.0.2) or later,
+and it's built with JDK 11.  The java client package works on AWS Java 11 Runtime or later.
+
+### Changed
+
+- **CUMULUS-3386**
+  - Built CMA java client with JDK 11
+
 ## [v1.4.0] - 2023-08-17
 
 ### Notable Changes

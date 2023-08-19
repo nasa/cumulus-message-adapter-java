@@ -22,12 +22,12 @@ public class TestAppender extends AbstractAppender {
     private final ArrayList<String> _log = new ArrayList<String>();
 
     protected TestAppender(String name, Filter filter, Layout<? extends Serializable> layout) {
-        super(name, filter, layout);
+        super(name, filter, layout, false, null);
     }
 
     public TestAppender()
     {
-        super("Test", null, PatternLayout.createDefaultLayout(), false);
+        super("Test", null, PatternLayout.createDefaultLayout(), false, null);
     }
 
     @Override

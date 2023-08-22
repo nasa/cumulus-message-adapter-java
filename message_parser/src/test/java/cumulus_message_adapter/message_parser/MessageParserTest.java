@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.Map;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -299,8 +298,7 @@ public class MessageParserTest {
             parser.RunCumulusTask(inputJsonString, null, new TestTask(true));
 
             String logMessage = appender.GetLogMessage(0);
-            JsonElement logElement = new JsonParser().parse(logMessage);
-            JsonObject logObject = logElement.getAsJsonObject();
+            JsonObject logObject = JsonParser.parseString(logMessage).getAsJsonObject();
             String errorMessage = logObject.get("message").getAsString();
 
             // Remove message for special comparison and timestamp since it is dynamically generated

@@ -93,63 +93,52 @@ public class AdapterUtilities {
      * @param fileZip The name and path of the zip file
      * @param dest    The destination directory for unzip the file
      * @throws IOException
-     * @throws FileNotFoundException
      * @cite https://stackoverflow.com/a/9325036
      */
-    private static void unzipFile(String zipFile, String extractFolder) throws IOException, FileNotFoundException {
-        try {
-            int BUFFER = 2048;
-            File file = new File(zipFile);
-            if (!file.exists())
-                throw new FileNotFoundException(file.getPath());
-            try (ZipFile zip = new ZipFile(file)) {
-                String newPath = extractFolder;
+    private static void unzipFile(String zipFile, String extractFolder) throws IOException {
+        int BUFFER = 2048;
+        File file = new File(zipFile);
+        if (!file.exists())
+            throw new FileNotFoundException(file.getPath());
+        try (ZipFile zip = new ZipFile(file)) {
+            String newPath = extractFolder;
 
-                new File(newPath).mkdir();
-                Enumeration zipFileEntries = zip.entries();
+            new File(newPath).mkdir();
+            Enumeration zipFileEntries = zip.entries();
 
-                // Process each entry
-                while (zipFileEntries.hasMoreElements()) {
-                    // grab a zip file entry
-                    ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
-                    String currentEntry = entry.getName();
+            // Process each entry
+            while (zipFileEntries.hasMoreElements()) {
+                // grab a zip file entry
+                ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+                String currentEntry = entry.getName();
 
-                    File destFile = new File(newPath, currentEntry);
-                    if (!destFile.exists())
-                        throw new FileNotFoundException(destFile.getPath());
-                    // destFile = new File(newPath, destFile.getName());
-                    File destinationParent = destFile.getParentFile();
-                    if (!destinationParent.exists())
-                        throw new FileNotFoundException(destinationParent.getPath());
-                    // create the parent directory structure if needed
-                    destinationParent.mkdirs();
+                File destFile = new File(newPath, currentEntry);
+                // destFile = new File(newPath, destFile.getName());
+                File destinationParent = destFile.getParentFile();
+                // create the parent directory structure if needed
+                destinationParent.mkdirs();
 
-                    if (!entry.isDirectory()) {
-                        try (BufferedInputStream is = new BufferedInputStream(zip
-                                .getInputStream(entry))) {
-                            int currentByte;
-                            // establish buffer for writing file
-                            byte data[] = new byte[BUFFER];
+                if (!entry.isDirectory()) {
+                    try (BufferedInputStream is = new BufferedInputStream(zip
+                            .getInputStream(entry))) {
+                        int currentByte;
+                        // establish buffer for writing file
+                        byte data[] = new byte[BUFFER];
 
-                            // write the current file to disk
-                            FileOutputStream fos = new FileOutputStream(destFile);
-                            try (BufferedOutputStream dest = new BufferedOutputStream(fos,
-                                    BUFFER)) {
-                                // read and write until last byte is encountered
-                                while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
-                                    dest.write(data, 0, currentByte);
-                                }
-
-                                dest.flush();
+                        // write the current file to disk
+                        FileOutputStream fos = new FileOutputStream(destFile);
+                        try (BufferedOutputStream dest = new BufferedOutputStream(fos,
+                                BUFFER)) {
+                            // read and write until last byte is encountered
+                            while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                                dest.write(data, 0, currentByte);
                             }
+
+                            dest.flush();
                         }
                     }
                 }
             }
-        } catch (FileNotFoundException fnfex) {
-            fail();
-        } catch (IOException ioex) {
-            fail();
         }
     }
 

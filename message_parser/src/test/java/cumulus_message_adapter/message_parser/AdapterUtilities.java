@@ -1,7 +1,11 @@
 package cumulus_message_adapter.message_parser;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -12,9 +16,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.Enumeration;
 
 /**
  * Utilities for downloading and cleaning up Cumulus Message Adapter package
@@ -85,28 +93,63 @@ public class AdapterUtilities {
      * @param fileZip The name and path of the zip file
      * @param dest    The destination directory for unzip the file
      * @throws IOException
+     * @throws FileNotFoundException
+     * @cite https://stackoverflow.com/a/9325036
      */
-    private static void unzipFile(String fileZip, String dest) throws IOException {
-        ProcessBuilder processBuilder = new ProcessBuilder("unzip", fileZip, "-d", dest);
-        String command = processBuilder.command().toString();
-
+    private static void unzipFile(String zipFile, String extractFolder) throws IOException, FileNotFoundException {
         try {
-            Process process = processBuilder.start();
-            final InputStream stdoutInputStream = process.getInputStream();
-            final BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(stdoutInputStream));
-            while (stdoutReader.readLine() != null) {
-            }
+            int BUFFER = 2048;
+            File file = new File(zipFile);
+            if (!file.exists())
+                throw new FileNotFoundException(file.getPath());
+            try (ZipFile zip = new ZipFile(file)) {
+                String newPath = extractFolder;
 
-            int exitCode = process.waitFor();
-            if (exitCode != 0) {
-                String errorString = String.format("Error executing command: %s, exit code: %s", command, exitCode);
-                System.out.println(errorString);
-                throw new IOException(errorString);
+                new File(newPath).mkdir();
+                Enumeration zipFileEntries = zip.entries();
+
+                // Process each entry
+                while (zipFileEntries.hasMoreElements()) {
+                    // grab a zip file entry
+                    ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
+                    String currentEntry = entry.getName();
+
+                    File destFile = new File(newPath, currentEntry);
+                    if (!destFile.exists())
+                        throw new FileNotFoundException(destFile.getPath());
+                    // destFile = new File(newPath, destFile.getName());
+                    File destinationParent = destFile.getParentFile();
+                    if (!destinationParent.exists())
+                        throw new FileNotFoundException(destinationParent.getPath());
+                    // create the parent directory structure if needed
+                    destinationParent.mkdirs();
+
+                    if (!entry.isDirectory()) {
+                        try (BufferedInputStream is = new BufferedInputStream(zip
+                                .getInputStream(entry))) {
+                            int currentByte;
+                            // establish buffer for writing file
+                            byte data[] = new byte[BUFFER];
+
+                            // write the current file to disk
+                            FileOutputStream fos = new FileOutputStream(destFile);
+                            try (BufferedOutputStream dest = new BufferedOutputStream(fos,
+                                    BUFFER)) {
+                                // read and write until last byte is encountered
+                                while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
+                                    dest.write(data, 0, currentByte);
+                                }
+
+                                dest.flush();
+                            }
+                        }
+                    }
+                }
             }
-        } catch (InterruptedException e) {
-            String errorString = String.format("Error executing command: %s, error: %s", command, e.getMessage());
-            System.out.println(errorString);
-            throw new IOException(errorString);
+        } catch (FileNotFoundException fnfex) {
+            fail();
+        } catch (IOException ioex) {
+            fail();
         }
     }
 
@@ -118,7 +161,7 @@ public class AdapterUtilities {
     public static void downloadCMA(String path) throws IOException {
         String version = (System.getenv(MESSAGE_ADAPTER_VERSION) != null) ? System.getenv(MESSAGE_ADAPTER_VERSION)
                 : fetchLatestMessageAdapterRelease();
-        String url = CMA_DOWNLOAD_URL_PREFIX + version + File.separator + CMA_FILENAME;
+        String url = CMA_DOWNLOAD_URL_PREFIX + version + "/" + CMA_FILENAME;
         String currentDirectory = System.getProperty("user.dir");
         String zipFile = currentDirectory + File.separator + CMA_FILENAME;
         downloadFile(url, zipFile);
@@ -172,10 +215,10 @@ public class AdapterUtilities {
     }
 
     /**
-     * load the example output json message from file and update it with TestTask output
+     * load the example output json message from file and update it with TestTask
+     * output
      */
-    public static Map<String, Object> getExpectedTestTaskOutputJson() throws IOException
-    {
+    public static Map<String, Object> getExpectedTestTaskOutputJson() throws IOException {
         String expectedJsonString = loadResourceToString("basic.output.json");
         Map<String, Object> expectedOutputJson = JsonUtils.toMap(expectedJsonString);
         HashMap<String, String> taskMap = new HashMap<String, String>();

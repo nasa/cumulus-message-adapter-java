@@ -29,10 +29,7 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/timing.properties
-
-# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
-!/.mvn/wrapper/maven-wrapper.jar
+.mvn/
 
 .vscode/
 .settings/
@@ -40,3 +37,6 @@ buildNumber.properties
 bin/
 build/
 lib/
+**/.classpath
+**/.factorypath
+**/.project

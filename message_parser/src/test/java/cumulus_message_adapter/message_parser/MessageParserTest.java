@@ -4,11 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 
-import org.junit.Test;
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
-import org.junit.FixMethodOrder;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterAll;
+//import org.junit.jupiter.api.FixMethodOrder;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.Map;
@@ -19,17 +21,17 @@ import com.google.gson.JsonParser;
 /**
  * Unit test for Message Parser test.
  */
-@FixMethodOrder
+
 public class MessageParserTest {
-    @BeforeClass
+    @BeforeAll
     public static void setup() throws IOException {
-        AdapterUtilities.deleteCMA("cumulus-message-adapter");
-        AdapterUtilities.downloadCMA("cumulus-message-adapter");
+        //AdapterUtilities.deleteCMA("cumulus-message-adapter");
+        //AdapterUtilities.downloadCMA("cumulus-message-adapter");
     }
 
-    @AfterClass
+    @AfterAll
     public static void teardown() throws IOException {
-        AdapterUtilities.deleteCMA("cumulus-message-adapter");
+        //AdapterUtilities.deleteCMA("cumulus-message-adapter");
     }
 
     /*

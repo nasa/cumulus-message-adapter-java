@@ -26,14 +26,17 @@
       </repository>
   </distributionManagement>
   <properties>
+    <maven.compiler.source>${javaVersion}</maven.compiler.source>
+    <maven.compiler.target>${javaVersion}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.2</version>
-      <scope>test</scope>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <scope>test</scope>
+        <version>5.10.1</version>
     </dependency>
     <dependency>
       <groupId>com.github.stefanbirkner</groupId>
@@ -66,6 +69,12 @@
       <artifactId>log4j-api</artifactId>
       <version>2.20.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>3.2.2</version>
+    </dependency>
   </dependencies>
   <build>
   <plugins>
@@ -73,18 +82,18 @@
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-compiler-plugin</artifactId>
       <version>3.11.0</version>
-      <configuration>
-        <release>11</release>
+      <!--<configuration>
+        <release>17</release>
         <compilerArgs>
           <arg>-Xlint:deprecation</arg>
           <arg>-Xlint:unchecked</arg>
         </compilerArgs>
-      </configuration>
+      </configuration>-->
     </plugin>
     <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-surefire-plugin</artifactId>
-      <version>3.1.2</version>
+      <version>3.2.2</version>
       <configuration>
         <useSystemClassLoader>false</useSystemClassLoader>
       </configuration>

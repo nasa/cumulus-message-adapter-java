@@ -133,8 +133,6 @@ public class AdapterUtilities {
                             while ((currentByte = is.read(data, 0, BUFFER)) != -1) {
                                 dest.write(data, 0, currentByte);
                             }
-
-                            dest.flush();
                         }
                     }
                 }

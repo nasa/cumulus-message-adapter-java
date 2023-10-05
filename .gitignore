@@ -40,5 +40,8 @@ buildNumber.properties
 bin/
 build/
 lib/
-**/.classpath
-**/.project
+task/.project
+task/.classpath
+message_parser/.classpath
+message_parser/.factorypath
+message_parser/.project

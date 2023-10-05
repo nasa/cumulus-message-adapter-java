@@ -40,3 +40,5 @@ buildNumber.properties
 bin/
 build/
 lib/
+**/.classpath
+**/.project

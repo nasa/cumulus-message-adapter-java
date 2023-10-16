@@ -42,9 +42,10 @@ public class AdapterUtilities {
      * @throws IOException
      */
     private static void downloadFile(String url, String localFilename) throws IOException {
-        InputStream in = new URL(url).openStream();
-        Files.copy(in, Paths.get(localFilename), StandardCopyOption.REPLACE_EXISTING);
-        in.close();
+        try(InputStream in = new URL(url).openStream())
+        {
+            Files.copy(in, Paths.get(localFilename), StandardCopyOption.REPLACE_EXISTING);
+        }
         System.out.println(url + " is downloaded to " + localFilename);
     }
 

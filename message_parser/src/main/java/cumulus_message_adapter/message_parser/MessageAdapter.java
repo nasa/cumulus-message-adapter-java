@@ -17,13 +17,14 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.time.Duration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class MessageAdapter implements IMessageAdapter
 {
-    private static final int MESSAGE_ADAPTER_TIMEOUT = 60 * 5; // seconds
+    private static final int MESSAGE_ADAPTER_TIMEOUT = (int)Duration.ofMinutes(5).toSeconds(); // seconds
     private static final String systemPython = "python3";
 
     public String GetMessageAdapterEnvironmentVariable()
@@ -47,7 +48,13 @@ public class MessageAdapter implements IMessageAdapter
           return new ProcessBuilder(systemPython, messageAdapterPath, command);
         }
         // If there is no system python or USE_CMA_BINARY is true, attempt use of pre-packaged CMA binary
-        return new ProcessBuilder(messageAdapterPath + "/cma_bin/cma", command);
+        StringBuilder sbProcessPath = new StringBuilder();
+        sbProcessPath.append(messageAdapterPath);
+        sbProcessPath.append(File.separator);
+        sbProcessPath.append("cma_bin");
+        sbProcessPath.append(File.separator);
+        sbProcessPath.append ("cma");
+        return new ProcessBuilder(sbProcessPath.toString(), command);
       }
 
     /**

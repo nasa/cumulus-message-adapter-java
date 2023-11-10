@@ -7,6 +7,11 @@
   <version>2.0.0</version>
   <name>task</name>
   <url>http://maven.apache.org</url>
+  <properties>
+    <maven.compiler.source>${javaVersion}</maven.compiler.source>
+    <maven.compiler.target>${javaVersion}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <repositories>
     <repository>
       <id>clojars-repository</id>

@@ -1,3 +1,5 @@
+[![cumulus-message-adapter-java](https://github.com/FreedomFaighter/cumulus-message-adapter-java/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/FreedomFaighter/cumulus-message-adapter-java/actions/workflows/build-and-test.yml)
+
 # cumulus-message-adapter-java
 
 [![CircleCI](https://circleci.com/gh/nasa/cumulus-message-adapter-java.svg?style=svg)](https://circleci.com/gh/nasa/cumulus-message-adapter-java)

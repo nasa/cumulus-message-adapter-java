@@ -42,8 +42,7 @@ public class AdapterUtilities {
      * @throws IOException
      */
     private static void downloadFile(String url, String localFilename) throws IOException {
-        try(InputStream in = new URL(url).openStream())
-        {
+        try (InputStream in = new URL(url).openStream()) {
             Files.copy(in, Paths.get(localFilename), StandardCopyOption.REPLACE_EXISTING);
         }
         System.out.println(url + " is downloaded to " + localFilename);
@@ -65,14 +64,13 @@ public class AdapterUtilities {
 
         // Read response
         StringBuilder jsonStringB = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line;
-        while ((line = br.readLine()) != null) {
-            jsonStringB.append(line);
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonStringB.append(line);
+            }
         }
-        br.close();
-        conn.disconnect();
-
+        
         return jsonStringB.toString();
     }
 

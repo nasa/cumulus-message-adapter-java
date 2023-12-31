@@ -71,7 +71,8 @@ public class TaskLogic implements ITask
      * @param context - AWS Lambda context
      * @return JSON string
      */
-    public String PerformFunction(String input)
+    @Override
+    public String PerformFunction(String input, Context context)
     {
         AdapterLogger.LogInfo("Business logic input: " + input);
 

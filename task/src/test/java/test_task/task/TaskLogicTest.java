@@ -19,6 +19,6 @@ public class TaskLogicTest
     @Test
     public void taskLogicGetTopicArnIsNullReturn()
     {
-        assertThrows(NullPointerException.class, () -> TaskLogicTest.taskLogicObject.PerformFunction(null));
+        assertThrows(NullPointerException.class, () -> TaskLogicTest.taskLogicObject.PerformFunction(null, null));
     }
 }

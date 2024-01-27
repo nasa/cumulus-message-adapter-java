@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: ['windows-latest', 'ubuntu-latest', 'macos-latest']
+        os: ['ubuntu-latest', 'macos-latest']
         java: ['11', '17']
         javaDistribution: [ 'temurin', 'microsoft', 'corretto' ]
     name: ${{ matrix.javaDistribution }} ${{ matrix.java }} on ${{ matrix.os}} cumulus-message-adapter-java

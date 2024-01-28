@@ -2,10 +2,16 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>gov.nasa.earthdata</groupId>
-  <artifactId>cumulus-message-adapter</artifactId>
+  <artifactId>message_parser</artifactId>
   <packaging>jar</packaging>
   <version>2.0.0</version>
-  <name>cumulus-message-adapter</name>
+  <name>message_parser</name>
+  <parent>
+    <groupId>gov.nasa.earthdata</groupId>
+    <artifactId>cumulus-message-adapter-java</artifactId>
+    <version>2.0.0</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
   <url>https://github.com/cumulus-nasa/cumulus-message-adapter-java</url>
   <licenses>
     <license>

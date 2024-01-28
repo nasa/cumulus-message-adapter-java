@@ -31,9 +31,7 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }}/java # location for the settings.xml file
     - name: Build with Maven
-      run: mvn --file message_parser/pom.xml dependency:go-offline -DjavaVersion=${{ matrix.java }}
-    - name: Build with Maven
-      run: mvn -B package --file task/pom.xml -DjavaVersion=${{ matrix.java }}
+      run: mvn -B --file pom.xml dependency:go-offline -DjavaVersion=${{ matrix.java }}
     - name: Install Python
       uses: actions/setup-python@v4
       with:
@@ -42,6 +40,4 @@ jobs:
     - name: Install Cumulus Message Adapter python requirements
       run: pip install -r message_parser/cumulus-message-adapter/requirements.txt
     - name: Test with Maven
-      run: mvn --file message_parser/pom.xml integration-test -DjavaVersion=${{ matrix.java }}
-    - name: Test with Maven
-      run: mvn test --file task/pom.xml -DjavaVersion=${{ matrix.java }}
+      run: mvn --file pom.xml integration-test -DjavaVersion=${{ matrix.java }}

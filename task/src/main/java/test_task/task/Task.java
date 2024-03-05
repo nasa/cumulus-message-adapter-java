@@ -49,10 +49,8 @@ public class Task implements RequestHandler<String, String>
         MessageParser parser = new MessageParser();
 
         String input = IOUtils.toString(inputStream, "UTF-8");
-        // If AdapterLogger is used before calling 'RunCumulusTask', initialize it first
-        AdapterLogger.InitializeLogger(context, input);
-        AdapterLogger.LogDebug(this.className + " Input: " + input);
-        String output = parser.RunCumulusTask(input, context, new TaskLogic());
+        //Use handlRequest public method
+        String output = this.handleRequest(input, context);
         AdapterLogger.LogDebug(this.className + " Output: " + output);
         outputStream.write(output.getBytes(Charset.forName("UTF-8")));
     }

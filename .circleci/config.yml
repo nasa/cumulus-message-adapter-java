@@ -32,6 +32,11 @@ jobs:
 
     steps:
       - checkout
+      - run:
+          name: "Pull cumulus-message-adapter submodule"
+          command: |
+            git submodule init
+            git submodule updated --remote
       - *restore_cache_jdk11
 
       - run: mvn -f message_parser/pom.xml dependency:go-offline

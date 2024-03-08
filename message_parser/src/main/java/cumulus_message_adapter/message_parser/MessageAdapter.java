@@ -10,20 +10,20 @@ import java.io.OutputStreamWriter;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.time.Duration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class MessageAdapter implements IMessageAdapter
 {
-    private static final int MESSAGE_ADAPTER_TIMEOUT = 60 * 5; // seconds
+    private static final long MESSAGE_ADAPTER_TIMEOUT = Duration.ofMinutes(5).getSeconds(); // seconds
     private static final String systemPython = "python3";
 
     public String GetMessageAdapterEnvironmentVariable()
@@ -47,7 +47,13 @@ public class MessageAdapter implements IMessageAdapter
           return new ProcessBuilder(systemPython, messageAdapterPath, command);
         }
         // If there is no system python or USE_CMA_BINARY is true, attempt use of pre-packaged CMA binary
-        return new ProcessBuilder(messageAdapterPath + "/cma_bin/cma", command);
+        StringBuilder sbProcessPath = new StringBuilder();
+        sbProcessPath.append(messageAdapterPath);
+        sbProcessPath.append(File.separator);
+        sbProcessPath.append("cma_bin");
+        sbProcessPath.append(File.separator);
+        sbProcessPath.append ("cma");
+        return new ProcessBuilder(sbProcessPath.toString(), command);
       }
 
     /**
@@ -69,20 +75,21 @@ public class MessageAdapter implements IMessageAdapter
             command = processBuilder.command().toString();
             Process process = processBuilder.start();
 
-            OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream());
-            writer.write(inputJson);
-            writer.close();
-
+            try(OutputStreamWriter writer = new OutputStreamWriter(process.getOutputStream()))
+            {
+                writer.write(inputJson);
+            }
             //fix to avoid overflowing processBuilder InputStream
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream())))
+            {
+
             //If we ever return more than a single (even very large line) from cumulus_message_adapter this won't work.
             while ((line = reader.readLine()) != null){
                 AdapterLogger.LogDebug(line);
                 break;
             }
-            reader.close();
+            }
             Boolean processComplete = false;
 
             try
